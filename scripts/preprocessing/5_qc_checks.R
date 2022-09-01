@@ -3,17 +3,15 @@
 # 1. Check the manual fail table. This file must first be manually updated, based
 # on the participants' feedback.
 # 
-# 2. Check 1 sec at instructions 
+# 2. Check break durations 
 # 
-# 3. Check break durations 
+# 3. Check missing data %
 # 
-# 4. Check missing data %
+# 4. Check the percentile of the permuted null distribution
 # 
-# 5. Check the percentile of the permuted null distribution
-# 
-# 6. Check for any display issues, like having to scroll
+# 5. Check for any display issues, like having to scroll
 #
-# 7. Check for 1.5IQR rule, relative to non-fail participants!
+# 6. Check for 1.5IQR rule, relative to non-fail participants!
 
 # Global setup ###########################
 
@@ -25,8 +23,8 @@ source('./scripts/utils/qc_checks_permutations.R')
 
 saveDataCSV <- T
 
-load_qc_perm_data <- T
-save_qc_perm_data <- F
+load_qc_perm_data <- F
+save_qc_perm_data <- T
 
 # Start the QC analysis ##################
 
@@ -36,26 +34,7 @@ qc_check_debrief_and_errors <- import('./results/qc_check_sheets/qc_check_debrie
         select(-reason) %>%
         rename(ptp = participant)
 
-## 2. Instruction times -------------------------------
-
-instruction_rt <- import('./results/preprocessed_data/instructions_rt_all_ptp.csv')
-
-# Check that for each participant, for each page (except the first) have at least 1 second
-instructions_summary <- instruction_rt %>%
-        filter(page_index != 0) %>% 
-        group_by(ptp,
-                 test_part,
-                 page_index) %>%
-        summarise(total_view_time = sum(viewing_time)) %>%
-        ungroup()
-
-# Did they fail here?
-qc_check_instructions_rt <- instructions_summary %>%
-        group_by(ptp) %>%
-        summarise(qc_fail_instructions_rt = any(total_view_time < 1000)) %>%
-        ungroup()
-
-## 3. Break times -----------------------------------------
+## 2. Break times -----------------------------------------
 
 max_break_mins_allowed <- 10
 
@@ -67,7 +46,7 @@ qc_check_break_rt <- break_rt %>%
                 time_spent_msec > max_break_mins_allowed * 60 * 1000)
                 )
 
-## 4. Missing data ---------------------------------------
+## 3. Missing data ---------------------------------------
 rt_threshold <- 350
 missed_perc_threshold <- 20
 
@@ -94,7 +73,7 @@ qc_check_missing_or_fast <- missing_data_summary %>%
                  counterbalancing) %>%
         summarise(qc_fail_missing_or_fast = any(perc_missed_or_fast > missed_perc_threshold))
 
-## 5. Check against permuted null distributions -------------------------
+## 4. Check against permuted null distributions -------------------------
 
 qc_check_permutation <- permute_mouse_error(long_data,
                                         load_existing_data = load_qc_perm_data,
@@ -106,7 +85,7 @@ qc_check_permutation <- qc_check_permutation %>%
                   n_perm_less_mouse_error,
                   percentile_sim_mouse_error))
 
-## 6. Check for display issues -----------------------------------------
+## 5. Check for display issues -----------------------------------------
 
 # Did they have to scroll?
 qc_check_display_issues <- long_data %>%
@@ -116,12 +95,9 @@ qc_check_display_issues <- long_data %>%
         mutate(qc_fail_display_issues = n_unique_scroll > 4)
 
 
-## Combine all the qc tables ----------------------------------------------
-qc_table <- merge(qc_check_debrief_and_errors,
-                  qc_check_instructions_rt,
-                  by = 'ptp')
+## Combine all the qc tables ---------------------------------------------
 
-qc_table <- merge(qc_table,
+qc_table <- merge(qc_check_debrief_and_errors,
                   qc_check_break_rt,
                   by = 'ptp')
 
@@ -138,7 +114,7 @@ qc_table <- merge(qc_table,
                   by = 'ptp')
 
 
-## 7. Check for 1.5IQR rule --------------------------------------------
+## 6. Check for 1.5IQR rule --------------------------------------------
 
 # Get the list of people passing QC till now
 good_ptp <- qc_table %>%
@@ -146,7 +122,7 @@ good_ptp <- qc_table %>%
                qc_fail_missing_or_fast == F,
                qc_fail_manual == F,
                qc_fail_mouse_error == F,
-               qc_fail_instructions_rt == F,
+               # qc_fail_instructions_rt == F,
                qc_fail_display_issues == F) %>%
         select(ptp) %>% .[[1]]
 
@@ -185,7 +161,6 @@ qc_table <- merge(qc_table,
 qc_table <- qc_table %>%
         rowwise() %>%
         mutate(qc_fail_overall = sum(qc_fail_manual,
-                                     qc_fail_instructions_rt,
                                      qc_fail_break_rt,
                                      qc_fail_missing_or_fast,
                                      qc_fail_display_issues,
@@ -208,7 +183,7 @@ batch_ids <- qc_table %>%
         rownames_to_column() %>% 
         mutate(batch_id = case_when(
                 as.numeric(rowname) <= 20 ~ 1,
-                TRUE ~ ceil((as.numeric(rowname)-20)/15)+1
+                TRUE ~ ceil((as.numeric(rowname)-20)/16)+1
                 
         )) %>%
         select(-rowname)
