@@ -132,7 +132,7 @@ for (iFile in incoming_files){
         
         curr_ptp_int_fb <- json_decoded$outputData$break_results[[1]][1,]
         
-        for (iBreak in seq(2,11)){
+        for (iBreak in seq(2,9)){
                 curr_ptp_int_fb <- bind_rows(curr_ptp_int_fb,json_decoded$outputData$break_results[[iBreak]][1,])
         }
         
@@ -170,8 +170,7 @@ for (iFile in incoming_files){
                 json_decoded$outputData$break_results[[1]][3,],
                 json_decoded$outputData$break_results[[3]][3,],
                 json_decoded$outputData$break_results[[5]][3,],
-                json_decoded$outputData$break_results[[7]][3,],
-                json_decoded$outputData$break_results[[9]][3,]
+                json_decoded$outputData$break_results[[7]][3,]
         )
         curr_ptp_listings <- curr_ptp_listings %>%
                 select(rt,response) %>%
@@ -179,7 +178,7 @@ for (iFile in incoming_files){
                        response.Q1 = response$Q1) %>% 
                 select(-response) %>% 
                 mutate(ptp = json_decoded$prolific_ID, .before = rt) %>% 
-                mutate(boards = unique(block_results$condition)[3:7], .before = rt)
+                mutate(boards = unique(block_results$condition)[3:6], .before = rt)
 
         listings_all_ptp <- bind_rows(listings_all_ptp,curr_ptp_listings)
         
@@ -187,7 +186,7 @@ for (iFile in incoming_files){
         ## Times spent at each break --------------------
         curr_ptp_break_rt <- NULL
         # curr_ptp_break_rt[1] <- json_decoded$prolific_ID
-        for (iBreak in seq(1,11)){
+        for (iBreak in seq(1,9)){
                 curr_ptp_break_rt[iBreak] <- sum(json_decoded$outputData$break_results[[iBreak]]$rt,na.rm=T)
         }
         
@@ -224,24 +223,23 @@ for (iFile in incoming_files){
 block_results_all_ptp <- block_results_all_ptp %>%
         reorder_levels(condition, order = c('practice',
                                             'practice2',
-                                            'schema_c',
-                                            'schema_ic',
-                                            'schema_l',
-                                            'random_loc',
-                                            'no_schema'))
+                                            'schema_2_2',
+                                            'schema_4_2',
+                                            'schema_4_4',
+                                            'schema_6_0'))
 
 names(feedback_all_ptp) <- c('ptp',
                              'Clear instructions?',
-                             'Notice schema_C',
-                             'Notice schema_IC',
-                             'Notice landmarks',
-                             'Notice random',
+                             'Notice schema_6_0',
+                             'Notice schema_2_2',
+                             'Notice schema_4_2',
+                             'Notice schema_4_4',
                              'Strategy?',
                              'Did visible ones help or hinder?',
                              'Anything else')
 
 # Create condition orders ################
-condition_orders <- tibble(.rows = 7)
+condition_orders <- tibble(.rows = 6)
 
 all_ptp <- unique(block_results_all_ptp$ptp)
 

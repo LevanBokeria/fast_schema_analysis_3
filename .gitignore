@@ -1,0 +1,7 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+
+/data/incoming_data/
+/data/anonymized_jatos_data/
