@@ -1,0 +1,935 @@
+---
+title: "Schema boards 2: Learning Rate"
+output:
+  html_document:
+    number_sections: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+# Setup: load data, define variables, etc
+
+```{r load-data-define-variables}
+
+rm(list=ls())
+
+source('./scripts/utils/load_all_libraries.R')
+
+qc_filter <- T
+
+plot_normality <- T
+plot_fits_near_far <- F
+
+source('./scripts/utils/load_transform_data.R')
+
+qc_table <- import('./results/qc_check_sheets/qc_table.csv')
+
+if (qc_filter){
+        
+        qc_pass_ptp <- qc_table %>%
+                filter(!qc_fail_overall) %>%
+                select(ptp) %>% .[[1]]
+        
+        
+        data_summary <- data_summary %>%
+                filter(ptp %in% qc_pass_ptp)
+        long_data <- long_data %>%
+                filter(ptp %in% qc_pass_ptp) 
+        mean_by_rep_long_all_types <- mean_by_rep_long_all_types %>%
+                filter(ptp %in% qc_pass_ptp)
+        
+}
+
+## BF test against 0 
+reportBF = function(x, digits = 4){
+        round(as.numeric(as.vector(x)), digits)
+}
+
+```
+
+# Normality checks
+
+## Learning rate 2-parameters
+
+```{r 2-param-learning-rates-normality-checks}
+
+if (plot_normality){
+
+# QQ Plot
+f1 <- data_summary %>%
+        ggqqplot(x = 'learning_rate_two_param') +
+        ggtitle('Learning rate 2 param, RAW: QQ Plots') +
+        facet_wrap(~hidden_pa_img_type) 
+        
+# Density plot
+f2 <- data_summary %>%
+        ggplot(aes(x=learning_rate_two_param,
+                   y = ..density..)) +
+        geom_histogram() +
+        geom_density(lwd = 1,
+                     color = 'red') +
+        facet_wrap(~hidden_pa_img_type) +
+        ggtitle('Learning rate 2 param, RAW: Histogram and Density')
+
+print(f1)
+print(f2)
+
+}
+
+
+```
+
+```{r 2-param-learning-rates-gauss-normality-checks}
+
+if (plot_normality){
+        
+# QQ Plot
+f1 <- data_summary %>%
+        ggqqplot(x = 'learning_rate_two_param_G') +
+        ggtitle('Learning rate 2 param, gaussianized: QQ Plots') +
+        facet_wrap(~hidden_pa_img_type) 
+        
+# Density plot
+f2 <- data_summary %>%
+        ggplot(aes(x=learning_rate_two_param_G,
+                   y = ..density..)) +
+        geom_histogram() +
+        geom_density(lwd = 1,
+                     color = 'red') +
+        facet_wrap(~hidden_pa_img_type) +
+        ggtitle('Learning rate 2 param gaussianized, RAW: Histogram and Density')
+
+print(f1)
+print(f2)
+
+}
+
+
+```
+
+
+```{r 2-param-learning-rates-no-outlier-normality-checks}
+
+if (plot_normality){
+ 
+# QQ Plot
+f1 <- data_summary %>%
+        ggqqplot(x = 'learning_rate_two_param_no_outlier') +
+        ggtitle('Learning rate 2 param, RAW: QQ Plots') +
+        facet_wrap(~hidden_pa_img_type) 
+        
+# Density plot
+f2 <- data_summary %>%
+        ggplot(aes(x=learning_rate_two_param_no_outlier,
+                   y = ..density..)) +
+        geom_histogram() +
+        geom_density(lwd = 1,
+                     color = 'red') +
+        facet_wrap(~hidden_pa_img_type) +
+        ggtitle('LR 2 param no outlier: Histogram and Density')
+
+print(f1)
+print(f2)
+
+}
+
+
+```
+
+```{r 2-param-learning-rates-no-outlier-gaussianized-normality-checks}
+
+if (plot_normality){
+
+# QQ Plot
+f1 <- data_summary %>%
+        ggqqplot(x = 'learning_rate_two_param_no_outlier_G') +
+        ggtitle('Learning rate 2 param, RAW: QQ Plots') +
+        facet_wrap(~hidden_pa_img_type) 
+        
+# Density plot
+f2 <- data_summary %>%
+        ggplot(aes(x=learning_rate_two_param_no_outlier_G,
+                   y = ..density..)) +
+        geom_histogram() +
+        geom_density(lwd = 1,
+                     color = 'red') +
+        facet_wrap(~hidden_pa_img_type) +
+        ggtitle('LR2 param, no outlier: Histogram and Density')
+
+print(f1)
+print(f2)
+
+}
+
+
+```
+
+# Parameter plots
+
+## 2 Param model
+
+### Overall, across conditions
+
+```{r learning-rates-conditions, fig.width=7}
+
+data_summary %>%
+        filter(hidden_pa_img_type == 'near_far_combined') %>%
+        droplevels() %>%
+        ggplot(aes(x=condition,
+                   y=learning_rate_two_param_no_outlier,
+                   fill=condition)) +
+        geom_violin(alpha = 0.2) +
+        geom_boxplot(width=0.1,
+                     fatten=4,
+                     outlier.shape = '') +
+        geom_point(alpha = 0.2) +
+        # geom_jitter(height = 0,
+        #             width = 0.06,
+        #             alpha = 0.3) +
+        geom_line(aes(group=ptp),
+                  alpha = 0.1) +
+        stat_summary(fun=mean,
+                     color='red',
+                     size=1) +
+        ggtitle('LR 2 no outlier, comparing conditions') +
+        ylab('LR 2') + 
+        xlab('') +
+        theme(legend.position = '')
+
+data_summary %>%
+        filter(hidden_pa_img_type == 'near_far_combined') %>%
+        droplevels() %>%
+        ggplot(aes(x=condition,
+                   y=learning_rate_two_param_no_outlier_G,
+                   fill=condition)) +
+        geom_violin(alpha = 0.2) +
+        geom_boxplot(width=0.1,
+                     fatten=4,
+                     outlier.shape = '') +
+        geom_point(alpha = 0.2) +
+        # geom_jitter(height = 0,
+        #             width = 0.06,
+        #             alpha = 0.3) +
+        geom_line(aes(group=ptp),
+                  alpha = 0.1) +
+        stat_summary(fun=mean,
+                     color='red',
+                     size=1) +
+        ggtitle('LR 2 no outlier gaussianized, comparing conditions') +
+        ylab('LR 2') + 
+        xlab('') +
+        theme(legend.position = '')
+
+data_summary %>%
+        filter(hidden_pa_img_type == 'near_far_combined') %>%
+        droplevels() %>%
+        ggplot(aes(x=condition,
+                   y=learning_rate_two_param,
+                   fill=condition)) +
+        geom_violin(alpha = 0.2) +
+        geom_boxplot(width=0.1,
+                     fatten=4,
+                     outlier.shape = '') +
+        geom_point(alpha = 0.2) +
+        # geom_jitter(height = 0,
+        #             width = 0.06,
+        #             alpha = 0.3) +
+        geom_line(aes(group=ptp),
+                  alpha = 0.1) +
+        stat_summary(fun=mean,
+                     color='red',
+                     size=1) +
+        ggtitle('LR 2 RAW, comparing conditions') +
+        ylab('LR 2 RAW') + 
+        xlab('') +
+        theme(legend.position = '')
+
+
+data_summary %>%
+        filter(hidden_pa_img_type == 'near_far_combined') %>%
+        droplevels() %>%
+        ggplot(aes(x=condition,
+                   y=learning_rate_two_param_G,
+                   fill=condition)) +
+        geom_violin(alpha = 0.2) +
+        geom_boxplot(width=0.1,
+                     fatten=4,
+                     outlier.shape = '') +
+        geom_point(alpha = 0.2) +
+        # geom_jitter(height = 0,
+        #             width = 0.06,
+        #             alpha = 0.3) +
+        geom_line(aes(group=ptp),
+                  alpha = 0.1) +
+        stat_summary(fun=mean,
+                     color='red',
+                     size=1) +
+        ggtitle('LR 2 RAW gaussianized, comparing conditions') +
+        ylab('LR 2 RAW gaussianized') + 
+        xlab('') +
+        theme(legend.position = '')
+
+```
+
+
+### Far vs Near:
+
+```{r learning-rate-2-param-conditions-near-far, fig.width=7}
+
+data_summary %>%
+        filter(hidden_pa_img_type != 'all_pa') %>%
+        droplevels() %>%
+        
+        pivot_wider(id_cols = c(ptp,
+                                counterbalancing,
+                                condition),
+                    names_from = hidden_pa_img_type,
+                    values_from = learning_rate_two_param_no_outlier) %>% 
+        mutate(far_minus_near = far - near) %>%
+        
+        ggplot(aes(x=condition,
+                   y=far_minus_near,
+                   fill=condition)) +
+        geom_violin(alpha = 0.2) +
+        geom_boxplot(width=0.1,
+                     fatten=4,
+                     outlier.shape = '') +
+        # geom_jitter(height = 0,
+        #             width = 0.06,
+        #             alpha = 0.3) +
+        geom_line(aes(group=ptp),
+                  alpha = 0.1) +
+        geom_point(alpha = 0.2) +
+        stat_summary(fun=mean,
+                     color='red',
+                     size=1) +
+        ggtitle('LR 2 no outlier, comparing conditions, Far-Near') +
+        geom_hline(yintercept = 0, linetype = 'dashed') +
+        theme(legend.position = '') +
+        ylab('Far minus Near') +
+        xlab('')
+
+data_summary %>%
+        filter(hidden_pa_img_type != 'all_pa') %>%
+        droplevels() %>%
+        
+        pivot_wider(id_cols = c(ptp,
+                                counterbalancing,
+                                condition),
+                    names_from = hidden_pa_img_type,
+                    values_from = learning_rate_two_param_no_outlier_G) %>% 
+        mutate(far_minus_near = far - near) %>%
+        
+        ggplot(aes(x=condition,
+                   y=far_minus_near,
+                   fill=condition)) +
+        geom_violin(alpha = 0.2) +
+        geom_boxplot(width=0.1,
+                     fatten=4,
+                     outlier.shape = '') +
+        # geom_jitter(height = 0,
+        #             width = 0.06,
+        #             alpha = 0.3) +
+        geom_line(aes(group=ptp),
+                  alpha = 0.1) +
+        geom_point(alpha = 0.2) +
+        stat_summary(fun=mean,
+                     color='red',
+                     size=1) +
+        ggtitle('LR 2 no outlier gaussianized, comparing conditions, Far-Near') +
+        geom_hline(yintercept = 0, linetype = 'dashed') +
+        theme(legend.position = '') +
+        ylab('Far minus Near') +
+        xlab('')
+
+data_summary %>%
+        filter(hidden_pa_img_type != 'all_pa') %>%
+        droplevels() %>%
+        
+        pivot_wider(id_cols = c(ptp,
+                                counterbalancing,
+                                condition),
+                    names_from = hidden_pa_img_type,
+                    values_from = learning_rate_two_param) %>% 
+        mutate(far_minus_near = far - near) %>%
+        
+        ggplot(aes(x=condition,
+                   y=far_minus_near,
+                   fill=condition)) +
+        geom_violin(alpha = 0.2) +
+        geom_boxplot(width=0.1,
+                     fatten=4,
+                     outlier.shape = '') +
+        # geom_jitter(height = 0,
+        #             width = 0.06,
+        #             alpha = 0.3) +
+        geom_line(aes(group=ptp),
+                  alpha = 0.1) +
+        geom_point(alpha = 0.2) +
+        stat_summary(fun=mean,
+                     color='red',
+                     size=1) +
+        ggtitle('LR 2 raw, comparing conditions, Far-Near') +
+        geom_hline(yintercept = 0, linetype = 'dashed') +
+        theme(legend.position = '') +
+        ylab('Far minus Near') +
+        xlab('')
+
+data_summary %>%
+        filter(hidden_pa_img_type != 'all_pa') %>%
+        droplevels() %>%
+        
+        pivot_wider(id_cols = c(ptp,
+                                counterbalancing,
+                                condition),
+                    names_from = hidden_pa_img_type,
+                    values_from = learning_rate_two_param_G) %>% 
+        mutate(far_minus_near = far - near) %>%
+        
+        ggplot(aes(x=condition,
+                   y=far_minus_near,
+                   fill=condition)) +
+        geom_violin(alpha = 0.2) +
+        geom_boxplot(width=0.1,
+                     fatten=4,
+                     outlier.shape = '') +
+        # geom_jitter(height = 0,
+        #             width = 0.06,
+        #             alpha = 0.3) +
+        geom_line(aes(group=ptp),
+                  alpha = 0.1) +
+        geom_point(alpha = 0.2) +
+        stat_summary(fun=mean,
+                     color='red',
+                     size=1) +
+        ggtitle('LR 2 raw gaussianized, comparing conditions, Far-Near') +
+        geom_hline(yintercept = 0, linetype = 'dashed') +
+        theme(legend.position = '') +
+        ylab('Far minus Near') +
+        xlab('')
+
+```
+
+
+# Parameter Bayes factors
+
+## 2 Parameter model
+
+### Schema C far vs near
+
+```{r learning-rate-bayes-analysis-schema-c-far-vs-near}
+
+data_for_bf_schema_c_far_vs_near_lr <- data_summary %>%
+        filter(hidden_pa_img_type != 'all_pa') %>%
+        filter(condition == 'schema_c') %>%
+        droplevels() %>%
+        
+        pivot_wider(id_cols = c(ptp,
+                                counterbalancing,
+                                condition),
+                    names_from = hidden_pa_img_type,
+                    values_from = learning_rate_two_param_no_outlier) %>% 
+        mutate(far_minus_near = far - near) %>%
+        select(far_minus_near) %>% .[[1]]
+
+data_for_bf_schema_c_far_vs_near_lrg <- data_summary %>%
+        filter(hidden_pa_img_type != 'all_pa') %>%
+        filter(condition == 'schema_c') %>%
+        droplevels() %>%
+        
+        pivot_wider(id_cols = c(ptp,
+                                counterbalancing,
+                                condition),
+                    names_from = hidden_pa_img_type,
+                    values_from = learning_rate_two_param_no_outlier_G) %>% 
+        mutate(far_minus_near = far - near) %>%
+        select(far_minus_near) %>% .[[1]]
+
+
+null_interval <- c(-Inf,0)
+
+bf_schema_c_far_vs_near_learning_rate <- reportBF(ttestBF(
+        data_for_bf_schema_c_far_vs_near_lr,
+        nullInterval = null_interval
+)[1],4)
+
+bf_schema_c_far_vs_near_learning_rate_g <- reportBF(ttestBF(
+        data_for_bf_schema_c_far_vs_near_lrg,
+        nullInterval = null_interval
+)[1],4)
+
+```
+
+### Near PA: L vs C
+
+```{r learning-rate-bf-analysis-near-schema-l-vs-schema-c}
+
+data_for_bf_near_l_vs_c_lr <- data_summary %>%
+        filter(hidden_pa_img_type == 'near') %>%
+        droplevels() %>%
+        
+        pivot_wider(id_cols = c(ptp,
+                                counterbalancing,
+                                hidden_pa_img_type),
+                    names_from = condition,
+                    values_from = learning_rate_two_param_no_outlier) %>% 
+        mutate(schema_l_minus_schema_c = schema_l - schema_c) %>% 
+        select(schema_l_minus_schema_c) %>% .[[1]]
+
+
+null_interval <- c(-Inf,0)
+
+bf_near_l_vs_c_lr <- reportBF(ttestBF(
+        data_for_bf_near_l_vs_c_lr,
+        nullInterval = null_interval
+)[1],4)
+
+data_for_bf_near_l_vs_c_lr_g <- data_summary %>%
+        filter(hidden_pa_img_type == 'near') %>%
+        droplevels() %>%
+        
+        pivot_wider(id_cols = c(ptp,
+                                counterbalancing,
+                                hidden_pa_img_type),
+                    names_from = condition,
+                    values_from = learning_rate_two_param_no_outlier_G) %>% 
+        mutate(schema_l_minus_schema_c = schema_l - schema_c) %>% 
+        select(schema_l_minus_schema_c) %>% .[[1]]
+
+bf_near_l_vs_c_lrg <- reportBF(ttestBF(
+        data_for_bf_near_l_vs_c_lr_g,
+        nullInterval = null_interval
+)[1],4)
+
+```
+
+### Near PA: C vs IC
+
+```{r learning-rate-bf-analysis-near-schema-c-vs-schema-ic}
+
+data_for_bf_near_schema_c_vs_ic_lr <- data_summary %>%
+        filter(hidden_pa_img_type == 'near') %>%
+        droplevels() %>%
+        
+        pivot_wider(id_cols = c(ptp,
+                                counterbalancing,
+                                hidden_pa_img_type),
+                    names_from = condition,
+                    values_from = learning_rate_two_param_no_outlier) %>% 
+        mutate(schema_c_minus_schema_ic = schema_c - schema_ic) %>% 
+        select(schema_c_minus_schema_ic) %>% .[[1]]
+
+
+null_interval <- c(0,Inf)
+
+bf_near_schema_c_vs_ic_lr <- reportBF(ttestBF(
+        data_for_bf_near_schema_c_vs_ic_lr,
+        nullInterval = null_interval
+)[1],4)
+
+```
+
+
+# Learning curve plots
+
+## Plot outlier data
+
+```{r learning-curves-outliers, fig.height=10, fig.width=15}
+
+outlier_ptp <- data_summary %>%
+        filter(outside_iqr_two_param == T,
+               hidden_pa_img_type == 'near_far_combined') %>%
+        droplevels() %>%
+        select(ptp) %>% .[[1]] %>% as.character() %>% unique()
+
+# Plot the fits
+fig_each_ptp <- mean_by_rep_long_all_types %>%
+        filter(hidden_pa_img_type == 'near_far_combined',
+               border_dist_closest == 'all',
+               ptp %in% outlier_ptp) %>%
+        droplevels() %>%
+        ggplot(aes(x=hidden_pa_img_row_number_across_blocks,
+                   y=mouse_error_mean)) +
+        geom_vline(xintercept = 4.5, linetype = 'dashed') +
+
+        geom_point(alpha=0.5) +
+        geom_line(alpha=0.5) +
+
+
+        # Add the y_hat two parameters
+        geom_line(aes(x=hidden_pa_img_row_number_across_blocks,
+                      y=y_hat_two_param),
+                  size=1,
+                  color='red',
+                  linetype = 'twodash') +
+
+        # Add the y_hat three parameters
+        geom_line(aes(x=hidden_pa_img_row_number_across_blocks,
+                      y=y_hat_three_param),
+                  size=1,
+                  color='blue',
+                  linetype = 'longdash') +
+
+        geom_text(data=filter(
+                data_summary,
+                hidden_pa_img_type == 'near_far_combined',
+                outside_iqr_two_param == T,
+                ),
+                aes(x=4.5,
+                    y=250,
+                    label = paste('int=',
+                                  as.character(round(intercept_two_param,2)),
+                                  ' ',
+                                  'rate=',
+                                  as.character(round(learning_rate_two_param,2)),
+                                  seq='')),
+                color = 'red') +
+        geom_text(data=filter(
+                data_summary,
+                hidden_pa_img_type == 'near_far_combined',
+                outside_iqr_two_param == T,
+                ),
+                aes(x=4.5,
+                    y=200,
+                    label = paste('int=',
+                                  as.character(round(intercept_three_param,2)),
+                                  ' ',
+                                  'rate=',
+                                  as.character(round(learning_rate_three_param,2)),
+                                  seq='')),
+                color = 'blue') +
+
+
+        facet_grid(ptp~condition) +
+        ggtitle(paste('Mouse euclidean distance',sep='')) +
+        xlab('Image repetition') +
+        ylab('Mouse euclidean distance ') +
+        scale_x_continuous(breaks=c(1,2,3,4,5,6,7,8)) +
+        scale_y_continuous(breaks=seq(0,250,50)) +
+        theme(legend.position = '') +
+        theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())
+
+print(fig_each_ptp)
+
+
+```
+
+
+
+## All data, each condition
+
+```{r raw-learning-curves-and-fits, fig.width=13, fig.height=100}
+
+
+# Plot the fits
+fig_each_ptp <- mean_by_rep_long_all_types %>%
+        filter(hidden_pa_img_type == 'near_far_combined',
+               border_dist_closest == 'all') %>%
+        droplevels() %>%
+        ggplot(aes(x=hidden_pa_img_row_number_across_blocks,
+                   y=mouse_error_mean)) +
+        geom_vline(xintercept = 4.5, linetype = 'dashed') +
+
+        geom_point(alpha=0.5) +
+        geom_line(alpha=0.5) +
+
+
+        # Add the y_hat two parameters
+        geom_line(aes(x=hidden_pa_img_row_number_across_blocks,
+                      y=y_hat_two_param),
+                  size=1,
+                  color='red',
+                  linetype = 'twodash') +
+
+        # Add the y_hat three parameters
+        geom_line(aes(x=hidden_pa_img_row_number_across_blocks,
+                      y=y_hat_three_param),
+                  size=1,
+                  color='blue',
+                  linetype = 'longdash') +
+
+        geom_text(data=filter(
+                data_summary,
+                hidden_pa_img_type == 'near_far_combined',
+                ),
+                aes(x=4.5,
+                    y=250,
+                    label = paste('int=',
+                                  as.character(round(intercept_two_param,2)),
+                                  ' ',
+                                  'rate=',
+                                  as.character(round(learning_rate_two_param,2)),
+                                  seq='')),
+                color = 'red') +
+        geom_text(data=filter(
+                data_summary,
+                hidden_pa_img_type == 'near_far_combined',
+                ),
+                aes(x=4.5,
+                    y=200,
+                    label = paste('int=',
+                                  as.character(round(intercept_three_param,2)),
+                                  ' ',
+                                  'rate=',
+                                  as.character(round(learning_rate_three_param,2)),
+                                  seq='')),
+                color = 'blue') +
+
+
+        facet_grid(ptp~condition) +
+        ggtitle(paste('Mouse euclidean distance',sep='')) +
+        xlab('Image repetition') +
+        ylab('Mouse euclidean distance ') +
+        scale_x_continuous(breaks=c(1,2,3,4,5,6,7,8)) +
+        scale_y_continuous(breaks=seq(0,250,50)) +
+        theme(legend.position = '') +
+        theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())
+
+print(fig_each_ptp)
+
+```
+
+## All data, overlaid
+
+```{r learning-curves-across-part, fig.width=7, fig.height=6}
+
+# Plot the fits
+fig_each_ptp <- mean_by_rep_long_all_types %>%
+        filter(hidden_pa_img_type == 'near_far_combined',
+               border_dist_closest == 'all') %>%
+        droplevels() %>%                
+        group_by(condition,
+                 hidden_pa_img_row_number_across_blocks) %>%
+        summarise(n = n(),
+                  mouse_error_mean_across_ptp = mean(mouse_error_mean,na.rm = T),
+                  mouse_error_sd_across_ptp = sd(mouse_error_mean, na.rm = T),
+                  sem = mouse_error_sd_across_ptp/sqrt(n),
+                  upper_95_ci = mouse_error_mean_across_ptp + qt(0.975,df = n-1)*sem,
+                  lower_95_ci = mouse_error_mean_across_ptp - qt(0.975,df = n-1)*sem) %>% 
+        ungroup() %>% 
+        ggplot(aes(x=hidden_pa_img_row_number_across_blocks,
+                   y=mouse_error_mean_across_ptp,
+                   color=condition)) +
+        geom_point(size=2) +
+        geom_line(size=1) +
+        # geom_ribbon(aes(ymin = lower_95_ci, 
+        #                 ymax = upper_95_ci,
+        #                 group=condition,
+        #                 color=condition),
+        #             alpha = 0.1) +
+
+        # facet_grid(~condition) +
+        ggtitle(paste('Mouse euclidean distance; Across participants',sep='')) +
+        xlab('Image repetition') +
+        ylab('Mouse euclidean distance ') +
+        scale_x_continuous(breaks=c(1,2,3,4,5,6,7,8)) +
+        scale_y_continuous(breaks=seq(0,200,25)) +  
+        coord_cartesian(ylim = c(0,200)) +
+        # theme(legend.position = 'top') +
+        geom_vline(xintercept = 4.5, linetype = 'dashed') +
+        theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())        
+
+
+
+print(fig_each_ptp)
+
+
+```
+
+## Near vs far
+
+```{r landmark-raw-learning-curves-and-fits, fig.width=18, fig.height=100}
+if (plot_fits_near_far){
+        # For mouse euclidean distance
+        
+        fig_each_ptp_lm <- mean_by_rep_long_all_types %>%
+                filter(hidden_pa_img_type %in% c('near','far'),
+                       !condition %in% c('random_locations','no_schema'),
+                       border_dist_closest == 'all'
+                       ) %>%
+                droplevels() %>%
+                
+                ggplot(aes(x=hidden_pa_img_row_number_across_blocks,
+                           y=mouse_error_mean,
+                           group=hidden_pa_img_type,
+                           color=hidden_pa_img_type)) +
+                geom_point(size=2) +
+                geom_line(size=0.5) +
+        
+                # Add the y_hat learning and intercept
+                geom_line(aes(x=hidden_pa_img_row_number_across_blocks,
+                              y=y_hat_two_param),
+                          size=0.8,
+                          # color='blue',
+                          linetype = 'twodash') +
+                
+                # Add the y_hat learning and intercept
+                geom_line(aes(x=hidden_pa_img_row_number_across_blocks,
+                              y=y_hat_three_param),
+                          size=0.8,
+                          # color='blue',
+                          linetype = 'longdash') +
+                
+                
+                facet_grid(ptp~condition) +
+                ggtitle('Mouse euclidean distance') +
+                xlab('Image repetition') +
+                ylab('Mouse euclidean distance') +
+                scale_x_continuous(breaks=c(1,2,3,4,5,6,7,8)) +
+                scale_y_continuous(breaks=seq(0,250,50)) +
+        
+                # theme(legend.position = 'top') +
+                geom_vline(xintercept = 4.5, linetype = 'dashed') +
+                # theme(legend.position = '') +
+                theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())        
+        
+        
+        print(fig_each_ptp_lm)
+}
+
+```
+
+## Near vs far, across-participants
+
+```{r landmark-raw-learning-curves-and-fits-overlaid, fig.width=8, fig.height=5}
+
+# For mouse euclidean distance
+
+fig_each_ptp_lm <- mean_by_rep_long_all_types %>%
+        filter(hidden_pa_img_type %in% c('near','far'),
+               !condition %in% c('random_locations','no_schema'),
+               border_dist_closest == 'all'
+               ) %>%
+        droplevels() %>%
+        
+        group_by(condition,
+                 hidden_pa_img_type,
+                 hidden_pa_img_row_number_across_blocks) %>%
+        summarise(n = n(),
+                  mouse_error_mean_across_ptp = mean(mouse_error_mean,na.rm = T)) %>% 
+        ungroup() %>%
+        ggplot(aes(x=hidden_pa_img_row_number_across_blocks,
+                   y=mouse_error_mean_across_ptp,
+                   color=condition,
+                   linetype=hidden_pa_img_type)) +        
+        
+        geom_point(size=1) +
+        geom_line(size=0.5) +
+
+        ggtitle('Mouse euclidean distance') +
+        xlab('Image repetition') +
+        ylab('Mouse euclidean distance') +
+        scale_x_continuous(breaks=c(1,2,3,4,5,6,7,8)) +
+        scale_y_continuous(breaks=seq(0,250,50)) +
+
+        # theme(legend.position = 'top') +
+        geom_vline(xintercept = 4.5, linetype = 'dashed') +
+        # theme(legend.position = '') +
+        theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())        
+
+
+print(fig_each_ptp_lm)
+
+
+```
+
+
+## Near vs far difference across trials:
+
+```{r near-far-diff-across-reps, fig.width=20, fig.height=20}
+
+fig <- mean_by_rep_long_all_types %>%
+        filter(hidden_pa_img_type %in% c('near','far'),
+               !condition %in% c('random_locations','no_schema'),
+               border_dist_closest == 'all'
+               ) %>%
+        droplevels() %>%
+
+        pivot_wider(id_cols = c(ptp,
+                                counterbalancing,
+                                condition,
+                                hidden_pa_img_row_number_across_blocks),
+                    names_from = hidden_pa_img_type,
+                    values_from = mouse_error_mean) %>% 
+        mutate(far_minus_near = far - near) %>% 
+        
+        
+        ggplot(aes(x=hidden_pa_img_row_number_across_blocks,
+                   y=far_minus_near,
+                   color=condition,
+                   group=condition)) +        
+        
+        geom_point(size=1) +
+        geom_line(size=0.5) +
+
+        facet_wrap(~ptp) +
+        ggtitle('Mouse euclidean distance') +
+        xlab('Image repetition') +
+        ylab('Mouse euclidean distance') +
+        scale_x_continuous(breaks=c(1,2,3,4,5,6,7,8)) +
+        scale_y_continuous(breaks=seq(0,250,50)) +
+
+        # theme(legend.position = 'top') +
+        geom_vline(xintercept = 4.5, linetype = 'dashed') +
+        geom_hline(yintercept = 0, linetype = 'dashed') +
+        # theme(legend.position = '') +
+        theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())        
+
+
+print(fig)
+
+
+```
+
+## Near vs far diff, across participants:
+
+```{r near-far-diff-across-reps-overlaid, fig.width=7, fig.height=5}
+
+fig <- mean_by_rep_long_all_types %>%
+        filter(hidden_pa_img_type %in% c('near','far'),
+               !condition %in% c('random_locations','no_schema'),
+               border_dist_closest == 'all'
+               ) %>%
+        droplevels() %>%
+
+        pivot_wider(id_cols = c(ptp,
+                                counterbalancing,
+                                condition,
+                                hidden_pa_img_row_number_across_blocks),
+                    names_from = hidden_pa_img_type,
+                    values_from = mouse_error_mean) %>% 
+        mutate(far_minus_near = far - near) %>% 
+        
+        group_by(condition,
+                 hidden_pa_img_row_number_across_blocks) %>%
+        summarise(n = n(),
+                  far_minus_near_mean_across_ptp = mean(far_minus_near,na.rm = T)) %>% 
+        ungroup() %>%
+
+        ggplot(aes(x=hidden_pa_img_row_number_across_blocks,
+                   y=far_minus_near_mean_across_ptp,
+                   color=condition,
+                   group=condition)) +        
+        
+        geom_point(size=1) +
+        geom_line(size=0.5) +
+
+        ggtitle('Far minus Near') +
+        xlab('Image repetition') +
+        ylab('Far minus Near') +
+        scale_x_continuous(breaks=c(1,2,3,4,5,6,7,8)) +
+        scale_y_continuous(breaks=seq(-100,100,10)) +
+
+        # theme(legend.position = 'top') +
+        geom_vline(xintercept = 4.5, linetype = 'dashed') +
+        geom_hline(yintercept = 0, linetype = 'dashed') +
+        # theme(legend.position = '') +
+        theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())        
+
+
+print(fig)
+
+
+```

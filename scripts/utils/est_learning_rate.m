@@ -46,6 +46,16 @@ function [out_params,fval,exitFlag] = est_learning_rate(ptp_data,params,plotEsti
             end
         end
         
+        % If for the 2 parameter model, learning rate is c > 4.09 give
+        % infinite error
+        if strcmp(which_model,'two_parameters')
+            if x(2) > 4.09
+                
+                sse = Inf;
+                
+            end
+        end        
+        
     end
 
 end

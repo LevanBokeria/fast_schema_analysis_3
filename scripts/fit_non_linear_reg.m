@@ -9,7 +9,7 @@ warning('off','MATLAB:table:RowsAddedExistingVars')
 % warning('off','stats:nlinfit:IllConditionedJacobian')
 % warning('off','stats:nlinfit:IllConditionedJacobian')
 
-saveData = 0;
+saveData = 1;
 qc_filter = 0;
 
 %% Load and prepare the dataset

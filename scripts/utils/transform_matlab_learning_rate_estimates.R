@@ -48,12 +48,7 @@
                 
                 # Get the list of people passing QC till now
                 good_ptp <- qc_table %>%
-                        filter(qc_fail_break_rt == F,
-                               qc_fail_missing_or_fast == F,
-                               qc_fail_manual == F,
-                               qc_fail_mouse_error == F,
-                               qc_fail_instructions_rt == F,
-                               qc_fail_display_issues == F) %>%
+                        filter(qc_fail_overall == F) %>%
                         select(ptp) %>% .[[1]]
                 
                 # Get the list of people with no data for the 1st repetition
