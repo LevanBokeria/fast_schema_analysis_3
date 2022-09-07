@@ -23,7 +23,8 @@ source('./scripts/utils/qc_checks_permutations.R')
 
 saveDataCSV <- T
 
-load_qc_perm_data <- F
+load_qc_perm_data <- T
+
 save_qc_perm_data <- T
 
 # Start the QC analysis ##################
@@ -99,6 +100,7 @@ qc_check_display_issues <- long_data %>%
 
 qc_table <- merge(qc_check_debrief_and_errors,
                   qc_check_break_rt,
+                  all.y = T,
                   by = 'ptp')
 
 qc_table <- merge(qc_table,

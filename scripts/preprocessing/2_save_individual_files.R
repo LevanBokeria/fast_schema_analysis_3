@@ -23,6 +23,9 @@ prol_to_rand <- read_csv(paste0('../../../',
 # Get a list of all files in the folder
 incoming_files <- list.files(paste0('./data/incoming_data/',file_location,'/'))
 
+# Alternatively, specify the file name
+incoming_files <- c('jatos_results_3.txt')
+
 prol_ids <- c()
 
 for (iFile in incoming_files){

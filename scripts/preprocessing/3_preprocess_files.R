@@ -17,6 +17,9 @@ saveDataCSV <- T
 # Get a list of all files in the folder
 incoming_files <- list.files('./data/',pattern = '*.RDS')
 
+# Alternatively, specify the jatos file name
+# incoming_files <- c('jatos_results_3.txt')
+
 # Pre-assign variables
 block_results_all_ptp <- NULL
 listings_all_ptp      <- NULL
@@ -132,7 +135,10 @@ for (iFile in incoming_files){
         
         curr_ptp_int_fb <- json_decoded$outputData$break_results[[1]][1,]
         
-        for (iBreak in seq(2,9)){
+        # How many break components are there
+        n_break_results <- length(json_decoded$outputData$break_results)
+        
+        for (iBreak in seq(2,n_break_results)){
                 curr_ptp_int_fb <- bind_rows(curr_ptp_int_fb,json_decoded$outputData$break_results[[iBreak]][1,])
         }
         
@@ -186,7 +192,7 @@ for (iFile in incoming_files){
         ## Times spent at each break --------------------
         curr_ptp_break_rt <- NULL
         # curr_ptp_break_rt[1] <- json_decoded$prolific_ID
-        for (iBreak in seq(1,9)){
+        for (iBreak in seq(1,n_break_results)){
                 curr_ptp_break_rt[iBreak] <- sum(json_decoded$outputData$break_results[[iBreak]]$rt,na.rm=T)
         }
         
