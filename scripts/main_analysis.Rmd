@@ -58,6 +58,7 @@ reportBF = function(x, digits){
 if (plot_normality){
        # Density plot
 data_summary %>%
+        # filter(hidden_pa_img_type == 'near_far_combined') %>%
         ggplot(aes(x=block_2_mouse_error_mean,
                    y = ..density..)) +
         geom_histogram() +
@@ -69,6 +70,8 @@ data_summary %>%
 # QQ Plot
 
 data_summary %>%
+        
+        # filter(hidden_pa_img_type == 'near_far_combined') %>%
         ggqqplot(x = 'block_2_mouse_error_mean') +
         ggtitle('Block 2, RAW: QQ Plots') +
         facet_wrap(~hidden_pa_img_type) 
@@ -109,7 +112,7 @@ data_summary %>%
 ```{r block-2-conditions, fig.width=7}
 
 data_summary %>%
-        filter(hidden_pa_img_type == 'all_pa') %>%
+        filter(hidden_pa_img_type == 'near_far_combined') %>%
         droplevels() %>%
         ggplot(aes(x=condition,
                    y=block_2_mouse_error_mean,
@@ -137,7 +140,7 @@ data_summary %>%
 ```{r block-2-LOG-conditions}
 
 data_summary %>%
-        filter(hidden_pa_img_type == 'all_pa') %>%
+        filter(hidden_pa_img_type == 'near_far_combined') %>%
         droplevels() %>%
         
         ggplot(aes(x=condition,
@@ -167,7 +170,7 @@ data_summary %>%
 ```{r 2-2-vs-4-2, fig.width=3, fig.height=4}
 
 data_summary %>%
-        filter(hidden_pa_img_type == 'all_pa') %>%
+        filter(hidden_pa_img_type == 'near_far_combined') %>%
         droplevels() %>%
         
         pivot_wider(id_cols = c(ptp,
@@ -199,7 +202,7 @@ data_summary %>%
 ```{r schema-l-vs-schema-c-LOG, fig.width=3, fig.height=4}
 
 data_summary %>%
-        filter(hidden_pa_img_type == 'all_pa') %>%
+        filter(hidden_pa_img_type == 'near_far_combined') %>%
         droplevels() %>%
         
         pivot_wider(id_cols = c(ptp,
@@ -234,7 +237,7 @@ data_summary %>%
 ```{r bf-analysis-schema-2-2-vs-schema-2-4}
 
 data_for_bf_2_2_vs_4_2 <- data_summary %>%
-        filter(hidden_pa_img_type == 'all_pa') %>%
+        filter(hidden_pa_img_type == 'near_far_combined') %>%
         droplevels() %>%
         
         pivot_wider(id_cols = c(ptp,
@@ -262,7 +265,7 @@ es_2_2_vs_4_2 <- mean(data_for_bf_2_2_vs_4_2) / sd(data_for_bf_2_2_vs_4_2)
 ```{r bf-analysis-schema-2-2-vs-schema-2-4-LOG}
 
 data_for_bf_2_2_vs_4_2_LOG <- data_summary %>%
-        filter(hidden_pa_img_type == 'all_pa') %>%
+        filter(hidden_pa_img_type == 'near_far_combined') %>%
         droplevels() %>%
         
         pivot_wider(id_cols = c(ptp,
@@ -291,7 +294,7 @@ bf_2_2_vs_4_2_LOG <- reportBF(ttestBF(
 ```{r 4-4-vs-4-2, fig.width=3, fig.height=4}
 
 data_summary %>%
-        filter(hidden_pa_img_type == 'all_pa') %>%
+        filter(hidden_pa_img_type == 'near_far_combined') %>%
         droplevels() %>%
         
         pivot_wider(id_cols = c(ptp,
@@ -323,7 +326,7 @@ data_summary %>%
 ```{r schema-4_4-vs-schema-4-2-LOG, fig.width=3, fig.height=4}
 
 data_summary %>%
-        filter(hidden_pa_img_type == 'all_pa') %>%
+        filter(hidden_pa_img_type == 'near_far_combined') %>%
         droplevels() %>%
         
         pivot_wider(id_cols = c(ptp,
@@ -358,7 +361,7 @@ data_summary %>%
 ```{r bf-analysis-schema-4-4-vs-schema-4-2}
 
 data_for_bf_4_4_vs_4_2 <- data_summary %>%
-        filter(hidden_pa_img_type == 'all_pa') %>%
+        filter(hidden_pa_img_type == 'near_far_combined') %>%
         droplevels() %>%
         
         pivot_wider(id_cols = c(ptp,
@@ -386,7 +389,7 @@ es_4_4_vs_4_2 <- mean(data_for_bf_4_4_vs_4_2) / sd(data_for_bf_4_4_vs_4_2)
 ```{r bf-analysis-schema-4-4-vs-schema-4-2-LOG}
 
 data_for_bf_4_4_vs_4_2_LOG <- data_summary %>%
-        filter(hidden_pa_img_type == 'all_pa') %>%
+        filter(hidden_pa_img_type == 'near_far_combined') %>%
         droplevels() %>%
         
         pivot_wider(id_cols = c(ptp,
@@ -412,7 +415,8 @@ bf_4_4_vs_4_2_LOG <- reportBF(ttestBF(
 ```{r block-2-conditions-near-far, fig.width=7}
 
 data_summary %>%
-        filter(hidden_pa_img_type != 'all_pa') %>%
+        filter(!hidden_pa_img_type %in% c('all_pa',
+                                          'near_far_combined')) %>%
         droplevels() %>%
         
         pivot_wider(id_cols = c(ptp,
@@ -449,7 +453,8 @@ data_summary %>%
 ```{r block-2-LOG-conditions-near-far}
 
 data_summary %>%
-        filter(hidden_pa_img_type != 'all_pa') %>%
+        filter(!hidden_pa_img_type %in% c('all_pa',
+                                          'near_far_combined')) %>%
         droplevels() %>%
         
         pivot_wider(id_cols = c(ptp,
@@ -485,7 +490,8 @@ data_summary %>%
 ```{r bayes-analysis-schema-c-far-vs-near}
 
 data_for_bf_schema_6_0_far_vs_near <- data_summary %>%
-        filter(hidden_pa_img_type != 'all_pa') %>%
+        filter(!hidden_pa_img_type %in% c('all_pa',
+                                          'near_far_combined')) %>%
         filter(condition == 'schema_6_0') %>%
         droplevels() %>%
         
@@ -510,7 +516,8 @@ bf_schema_6_0_far_vs_near <- reportBF(ttestBF(
 ```{r bayes-analysis-schema-c-far-vs-near-LOG}
 
 data_for_bf_schema_6_0_far_vs_near_LOG <- data_summary %>%
-        filter(hidden_pa_img_type != 'all_pa') %>%
+        filter(!hidden_pa_img_type %in% c('all_pa',
+                                          'near_far_combined')) %>%
         filter(condition == 'schema_6_0') %>%
         droplevels() %>%
         
@@ -533,334 +540,6 @@ bf_schema_6_0_far_vs_near_LOG <- reportBF(ttestBF(
 ```
 
 
-# Near PAs: schema-l vs schema-c
-
-## Plot:
-
-```{r near-pa-schema-l-vs-schema-c, fig.width=3, fig.height=4}
-
-data_summary %>%
-        filter(hidden_pa_img_type == 'near') %>%
-        droplevels() %>%
-        
-        pivot_wider(id_cols = c(ptp,
-                                counterbalancing,
-                                hidden_pa_img_type),
-                    names_from = condition,
-                    values_from = block_2_mouse_error_mean) %>% 
-        mutate(schema_2_2_vs_4_2 = schema_l - schema_c) %>% 
-        
-        ggplot(aes(x='difference',
-                   y=schema_2_2_vs_4_2)) +
-        geom_violin() +
-        geom_boxplot(width=0.1,
-                     fatten=4,
-                     outlier.shape = '') +
-        geom_jitter(height = 0,
-                    width = 0.06,
-                    alpha = 0.3) +
-        stat_summary(fun=mean,
-                     color='red',
-                     size=1) +
-        ggtitle('Block 2, Near-PA, schema-l vs schema-c') +
-        geom_hline(yintercept = 0, linetype = 'dashed') +
-        ylab('Schema-l minus Schema-c') +
-        xlab('')
-
-```
-
-```{r near-pa-schema-l-vs-schema-c-LOG, fig.width=3, fig.height=4}
-
-data_summary %>%
-        filter(hidden_pa_img_type == 'near') %>%
-        droplevels() %>%
-        
-        pivot_wider(id_cols = c(ptp,
-                                counterbalancing,
-                                hidden_pa_img_type),
-                    names_from = condition,
-                    values_from = block_2_mouse_error_mean_LOG) %>% 
-        mutate(schema_2_2_vs_4_2 = schema_l - schema_c) %>% 
-        
-        ggplot(aes(x='difference',
-                   y=schema_2_2_vs_4_2)) +
-        geom_violin() +
-        geom_boxplot(width=0.1,
-                     fatten=4,
-                     outlier.shape = '') +
-        geom_jitter(height = 0,
-                    width = 0.06,
-                    alpha = 0.3) +
-        stat_summary(fun=mean,
-                     color='red',
-                     size=1) +
-        ggtitle('Block 2 LOG, Near-PA, schema-l vs schema-c') +
-        geom_hline(yintercept = 0, linetype = 'dashed')
-
-```
-
-## Bayes Factor
-
-```{r bf-analysis-near-schema-l-vs-schema-c}
-
-data_for_bf_near_2_2_vs_4_2 <- data_summary %>%
-        filter(hidden_pa_img_type == 'near') %>%
-        droplevels() %>%
-        
-        pivot_wider(id_cols = c(ptp,
-                                counterbalancing,
-                                hidden_pa_img_type),
-                    names_from = condition,
-                    values_from = block_2_mouse_error_mean) %>% 
-        mutate(schema_2_2_vs_4_2 = schema_l - schema_c) %>% 
-        select(schema_2_2_vs_4_2) %>% .[[1]]
-
-
-null_interval <- c(0,Inf)
-
-bf_near_2_2_vs_4_2 <- reportBF(ttestBF(
-        data_for_bf_near_2_2_vs_4_2,
-        nullInterval = null_interval
-)[1],4)
-
-```
-
-```{r bf-analysis-near-schema-l-vs-schema-c-LOG}
-
-data_for_bf_near_2_2_vs_4_2_LOG <- data_summary %>%
-        filter(hidden_pa_img_type == 'near') %>%
-        droplevels() %>%
-        
-        pivot_wider(id_cols = c(ptp,
-                                counterbalancing,
-                                hidden_pa_img_type),
-                    names_from = condition,
-                    values_from = block_2_mouse_error_mean_LOG) %>% 
-        mutate(schema_2_2_vs_4_2 = schema_l - schema_c) %>% 
-        select(schema_2_2_vs_4_2) %>% .[[1]]
-
-
-null_interval <- c(0,Inf)
-
-bf_near_2_2_vs_4_2_LOG <- reportBF(ttestBF(
-        data_for_bf_near_2_2_vs_4_2_LOG,
-        nullInterval = null_interval
-)[1],4)
-
-```
-
-# Far PAs: schema-l vs schema-c
-
-## Plot:
-
-```{r far-pa-schema-l-vs-schema-c, fig.width=3, fig.height=4}
-
-data_summary %>%
-        filter(hidden_pa_img_type == 'far') %>%
-        droplevels() %>%
-        
-        pivot_wider(id_cols = c(ptp,
-                                counterbalancing,
-                                hidden_pa_img_type),
-                    names_from = condition,
-                    values_from = block_2_mouse_error_mean) %>% 
-        mutate(schema_2_2_vs_4_2 = schema_l - schema_c) %>% 
-        
-        ggplot(aes(x='difference',
-                   y=schema_2_2_vs_4_2)) +
-        geom_violin() +
-        geom_boxplot(width=0.1,
-                     fatten=4,
-                     outlier.shape = '') +
-        geom_jitter(height = 0,
-                    width = 0.06,
-                    alpha = 0.3) +
-        stat_summary(fun=mean,
-                     color='red',
-                     size=1) +
-        stat_summary(fun.data = mean_cl_normal,
-                     geom = "errorbar",
-                     size=0.5,
-                     width=0.1,
-                     color='red') +        
-        ggtitle('Block 2, Far-PA, schema-l vs schema-c') +
-        geom_hline(yintercept = 0, linetype = 'dashed') +
-        ylab('Schema-l minus Schema-c') +
-        xlab('')
-
-```
-
-```{r far-pa-schema-l-vs-schema-c-LOG, fig.width=3, fig.height=4}
-
-data_summary %>%
-        filter(hidden_pa_img_type == 'far') %>%
-        droplevels() %>%
-        
-        pivot_wider(id_cols = c(ptp,
-                                counterbalancing,
-                                hidden_pa_img_type),
-                    names_from = condition,
-                    values_from = block_2_mouse_error_mean_LOG) %>% 
-        mutate(schema_2_2_vs_4_2 = schema_l - schema_c) %>% 
-        
-        ggplot(aes(x='difference',
-                   y=schema_2_2_vs_4_2)) +
-        geom_violin() +
-        geom_boxplot(width=0.1,
-                     fatten=4,
-                     outlier.shape = '') +
-        geom_jitter(height = 0,
-                    width = 0.06,
-                    alpha = 0.3) +
-        stat_summary(fun=mean,
-                     color='red',
-                     size=1) +
-        stat_summary(fun.data = mean_cl_normal,
-                     geom = "errorbar",
-                     size=0.5,
-                     width=0.1,
-                     color='red') +        
-        ggtitle('Block 2 LOG, Far-PA, schema-l vs schema-c') +
-        geom_hline(yintercept = 0, linetype = 'dashed')
-
-```
-
-## Bayes Factor
-
-```{r bf-analysis-far-schema-l-vs-schema-c}
-
-data_for_bf_far_2_2_vs_4_2 <- data_summary %>%
-        filter(hidden_pa_img_type == 'far') %>%
-        droplevels() %>%
-        
-        pivot_wider(id_cols = c(ptp,
-                                counterbalancing,
-                                hidden_pa_img_type),
-                    names_from = condition,
-                    values_from = block_2_mouse_error_mean) %>% 
-        mutate(schema_2_2_vs_4_2 = schema_l - schema_c) %>% 
-        select(schema_2_2_vs_4_2) %>% .[[1]]
-
-
-null_interval <- c(0,Inf)
-
-bf_far_2_2_vs_4_2 <- reportBF(ttestBF(
-        data_for_bf_far_2_2_vs_4_2,
-        nullInterval = null_interval
-)[1],4)
-
-```
-
-```{r bf-analysis-far-schema-l-vs-schema-c-LOG}
-
-data_for_bf_far_2_2_vs_4_2_LOG <- data_summary %>%
-        filter(hidden_pa_img_type == 'far') %>%
-        droplevels() %>%
-        
-        pivot_wider(id_cols = c(ptp,
-                                counterbalancing,
-                                hidden_pa_img_type),
-                    names_from = condition,
-                    values_from = block_2_mouse_error_mean_LOG) %>% 
-        mutate(schema_2_2_vs_4_2 = schema_l - schema_c) %>% 
-        select(schema_2_2_vs_4_2) %>% .[[1]]
-
-
-null_interval <- c(0,Inf)
-
-bf_far_2_2_vs_4_2_LOG <- reportBF(ttestBF(
-        data_for_bf_far_2_2_vs_4_2_LOG,
-        nullInterval = null_interval
-)[1],4)
-
-```
-
-# Near PAs: schema-C vs schema-IC
-
-## Plot:
-
-```{r near-pa-schema-c-vs-schema-ic, fig.width=3, fig.height=4}
-
-data_summary %>%
-        filter(hidden_pa_img_type == 'near') %>%
-        droplevels() %>%
-        
-        pivot_wider(id_cols = c(ptp,
-                                counterbalancing,
-                                hidden_pa_img_type),
-                    names_from = condition,
-                    values_from = block_2_mouse_error_mean) %>% 
-        mutate(schema_c_minus_schema_ic = schema_c - schema_ic) %>% 
-        
-        ggplot(aes(x='difference',
-                   y=schema_c_minus_schema_ic)) +
-        geom_violin() +
-        geom_boxplot(width=0.1,
-                     fatten=4,
-                     outlier.shape = '') +
-        geom_jitter(height = 0,
-                    width = 0.06,
-                    alpha = 0.3) +
-        stat_summary(fun=mean,
-                     color='red',
-                     size=1) +
-        ggtitle('Block 2, Near-PA, schema-c vs schema-ic') +
-        geom_hline(yintercept = 0, linetype = 'dashed') +
-        ylab('Schema-C minus Schema-IC') +
-        xlab('')
-
-```
-
-## Bayes Factor
-
-```{r bf-analysis-near-schema-c-vs-schema-ic}
-
-data_for_bf_near_c_vs_ic <- data_summary %>%
-        filter(hidden_pa_img_type == 'near') %>%
-        droplevels() %>%
-        
-        pivot_wider(id_cols = c(ptp,
-                                counterbalancing,
-                                hidden_pa_img_type),
-                    names_from = condition,
-                    values_from = block_2_mouse_error_mean) %>% 
-        mutate(schema_c_minus_schema_ic = schema_c - schema_ic) %>% 
-        select(schema_c_minus_schema_ic) %>% .[[1]]
-
-
-null_interval <- c(0,Inf)
-
-bf_near_c_vs_ic <- reportBF(ttestBF(
-        data_for_bf_near_c_vs_ic,
-        nullInterval = null_interval
-)[1],4)
-
-```
-
-```{r bf-analysis-near-schema-c-vs-schema-ic-LOG}
-
-data_for_bf_near_c_vs_ic_LOG <- data_summary %>%
-        filter(hidden_pa_img_type == 'near') %>%
-        droplevels() %>%
-        
-        pivot_wider(id_cols = c(ptp,
-                                counterbalancing,
-                                hidden_pa_img_type),
-                    names_from = condition,
-                    values_from = block_2_mouse_error_mean_LOG) %>% 
-        mutate(schema_c_minus_schema_ic = schema_c - schema_ic) %>% 
-        select(schema_c_minus_schema_ic) %>% .[[1]]
-
-
-null_interval <- c(0,Inf)
-
-bf_near_c_vs_ic_LOG <- reportBF(ttestBF(
-        data_for_bf_near_c_vs_ic_LOG,
-        nullInterval = null_interval
-)[1],4)
-
-```
-
 # Reaction times 
 
 ## Comparing conditions 
@@ -868,7 +547,8 @@ bf_near_c_vs_ic_LOG <- reportBF(ttestBF(
 ```{r rt-diff-conditions}
 
 data_summary %>%
-        filter(hidden_pa_img_type == 'all_pa') %>%
+        filter(!hidden_pa_img_type %in% c('all_pa',
+                                          'near_far_combined')) %>%
         droplevels() %>%
         
         ggplot(aes(x=condition,
@@ -890,7 +570,8 @@ data_summary %>%
 ```{r rt-conditions-near-far}
 
 data_summary %>%
-        filter(hidden_pa_img_type != 'all_pa') %>%
+        filter(!hidden_pa_img_type %in% c('all_pa',
+                                          'near_far_combined')) %>%
         droplevels() %>%
         
         pivot_wider(id_cols = c(ptp,

@@ -138,6 +138,10 @@ for (iFile in incoming_files){
         # How many break components are there
         n_break_results <- length(json_decoded$outputData$break_results)
         
+        if (n_break_results != 9){
+                warning(paste0(json_decoded$prolific_ID,' does not have 9 break results!'))
+        }
+        
         for (iBreak in seq(2,n_break_results)){
                 curr_ptp_int_fb <- bind_rows(curr_ptp_int_fb,json_decoded$outputData$break_results[[iBreak]][1,])
         }
