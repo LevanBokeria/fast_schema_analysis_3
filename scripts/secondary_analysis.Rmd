@@ -19,7 +19,9 @@ source('./scripts/utils/load_all_libraries.R')
 
 qc_filter <- T
 
-plot_normality <- T
+no_first_rep_filter <- T
+
+plot_normality     <- T
 plot_fits_near_far <- F
 
 source('./scripts/utils/load_transform_data.R')
@@ -39,6 +41,25 @@ if (qc_filter){
                 filter(ptp %in% qc_pass_ptp) 
         mean_by_rep_long_all_types <- mean_by_rep_long_all_types %>%
                 filter(ptp %in% qc_pass_ptp)
+        
+}
+
+if (no_first_rep_filter){
+        
+        ptp_without_first_rep <- data_summary %>%
+                group_by(ptp) %>%
+                summarise(no_data_first_rep = any(no_data_first_rep)) %>%
+                filter(no_data_first_rep) %>% 
+                ungroup() %>%
+                droplevels() %>%
+                select(ptp) %>% .[[1]]
+        
+        data_summary <- data_summary %>%
+                filter(!ptp %in% ptp_without_first_rep)
+        long_data <- long_data %>%
+                filter(!ptp %in% ptp_without_first_rep) 
+        mean_by_rep_long_all_types <- mean_by_rep_long_all_types %>%
+                filter(!ptp %in% ptp_without_first_rep)        
         
 }
 
@@ -417,11 +438,25 @@ data_summary %>%
 
 ## 2 Parameter model
 
-### Schema C far vs near
+### Schema 6-0 far vs near
 
 ```{r learning-rate-bayes-analysis-schema-c-far-vs-near}
 
 data_for_bf_schema_6_0_far_vs_near_lr <- data_summary %>%
+        filter(hidden_pa_img_type != 'all_pa',
+               hidden_pa_img_type != 'near_far_combined') %>%
+        filter(condition == 'schema_6_0') %>%
+        droplevels() %>% 
+        
+        pivot_wider(id_cols = c(ptp,
+                                counterbalancing,
+                                condition),
+                    names_from = hidden_pa_img_type,
+                    values_from = learning_rate_two_param_G) %>% 
+        mutate(far_minus_near = far - near) %>% 
+        select(far_minus_near) %>% .[[1]]
+
+data_for_bf_schema_6_0_far_vs_near_lrg <- data_summary %>%
         filter(hidden_pa_img_type != 'all_pa',
                hidden_pa_img_type != 'near_far_combined') %>%
         filter(condition == 'schema_6_0') %>%
@@ -431,20 +466,7 @@ data_for_bf_schema_6_0_far_vs_near_lr <- data_summary %>%
                                 counterbalancing,
                                 condition),
                     names_from = hidden_pa_img_type,
-                    values_from = learning_rate_two_param_no_outlier) %>% 
-        mutate(far_minus_near = far - near) %>% View()
-        select(far_minus_near) %>% .[[1]]
-
-data_for_bf_schema_6_0_far_vs_near_lrg <- data_summary %>%
-        filter(hidden_pa_img_type != 'all_pa') %>%
-        filter(condition == 'schema_6_0') %>%
-        droplevels() %>%
-        
-        pivot_wider(id_cols = c(ptp,
-                                counterbalancing,
-                                condition),
-                    names_from = hidden_pa_img_type,
-                    values_from = learning_rate_two_param_no_outlier_G) %>% 
+                    values_from = learning_rate_two_param_G) %>% 
         mutate(far_minus_near = far - near) %>%
         select(far_minus_near) %>% .[[1]]
 
@@ -463,75 +485,88 @@ bf_schema_6_0_far_vs_near_learning_rate_g <- reportBF(ttestBF(
 
 ```
 
-### Near PA: L vs C
+## Schema 2_2 vs 4_2
 
-```{r learning-rate-bf-analysis-near-schema-l-vs-schema-c}
+```{r learning-rate-bayes-analysis-schema-2_2-vs-4_2}
 
-data_for_bf_near_l_vs_c_lr <- data_summary %>%
-        filter(hidden_pa_img_type == 'near') %>%
+data_for_bf_schema_2_2_vs_4_2_lr <- data_summary %>%
+        filter(hidden_pa_img_type == 'near_far_combined') %>%
         droplevels() %>%
         
         pivot_wider(id_cols = c(ptp,
-                                counterbalancing,
-                                hidden_pa_img_type),
+                                counterbalancing),
                     names_from = condition,
-                    values_from = learning_rate_two_param_no_outlier) %>% 
-        mutate(schema_l_minus_schema_6_0 = schema_l - schema_6_0) %>% 
-        select(schema_l_minus_schema_6_0) %>% .[[1]]
+                    values_from = learning_rate_two_param) %>% 
+        mutate(schema_2_2_vs_4_2 = schema_2_2 - schema_4_2) %>% 
+        select(schema_2_2_vs_4_2) %>% .[[1]]
+
+data_for_bf_schema_2_2_vs_4_2_lrg <- data_summary %>%
+        filter(hidden_pa_img_type == 'near_far_combined') %>%
+        droplevels() %>%
+        
+        pivot_wider(id_cols = c(ptp,
+                                counterbalancing),
+                    names_from = condition,
+                    values_from = learning_rate_two_param_G) %>% 
+        mutate(schema_2_2_vs_4_2 = schema_2_2 - schema_4_2) %>% 
+        select(schema_2_2_vs_4_2) %>% .[[1]]
+
+
+null_interval <- c(-Inf,Inf)
+
+bf_schema_2_2_vs_4_2_learning_rate <- reportBF(ttestBF(
+        data_for_bf_schema_2_2_vs_4_2_lr,
+        nullInterval = null_interval
+)[1],4)
+
+bf_schema_2_2_vs_4_2_learning_rate_g <- reportBF(ttestBF(
+        data_for_bf_schema_2_2_vs_4_2_lrg,
+        nullInterval = null_interval
+)[1],4)
+
+```
+
+
+## Schema 4_4 vs 4_2
+
+```{r learning-rate-bayes-analysis-schema-4_4-vs-4_2}
+
+data_for_bf_schema_4_4_vs_4_2_lr <- data_summary %>%
+        filter(hidden_pa_img_type == 'near_far_combined') %>%
+        droplevels() %>%
+        
+        pivot_wider(id_cols = c(ptp,
+                                counterbalancing),
+                    names_from = condition,
+                    values_from = learning_rate_two_param) %>% 
+        mutate(schema_4_4_vs_4_2 = schema_4_4 - schema_4_2) %>% 
+        select(schema_4_4_vs_4_2) %>% .[[1]]
+
+data_for_bf_schema_4_4_vs_4_2_lrg <- data_summary %>%
+        filter(hidden_pa_img_type == 'near_far_combined') %>%
+        droplevels() %>%
+        
+        pivot_wider(id_cols = c(ptp,
+                                counterbalancing),
+                    names_from = condition,
+                    values_from = learning_rate_two_param_G) %>% 
+        mutate(schema_4_4_vs_4_2 = schema_4_4 - schema_4_2) %>% 
+        select(schema_4_4_vs_4_2) %>% .[[1]]
 
 
 null_interval <- c(-Inf,0)
 
-bf_near_l_vs_c_lr <- reportBF(ttestBF(
-        data_for_bf_near_l_vs_c_lr,
+bf_schema_4_4_vs_4_2_learning_rate <- reportBF(ttestBF(
+        data_for_bf_schema_4_4_vs_4_2_lr,
         nullInterval = null_interval
 )[1],4)
 
-data_for_bf_near_l_vs_c_lr_g <- data_summary %>%
-        filter(hidden_pa_img_type == 'near') %>%
-        droplevels() %>%
-        
-        pivot_wider(id_cols = c(ptp,
-                                counterbalancing,
-                                hidden_pa_img_type),
-                    names_from = condition,
-                    values_from = learning_rate_two_param_no_outlier_G) %>% 
-        mutate(schema_l_minus_schema_6_0 = schema_l - schema_6_0) %>% 
-        select(schema_l_minus_schema_6_0) %>% .[[1]]
-
-bf_near_l_vs_c_lrg <- reportBF(ttestBF(
-        data_for_bf_near_l_vs_c_lr_g,
+bf_schema_4_4_vs_4_2_learning_rate_g <- reportBF(ttestBF(
+        data_for_bf_schema_4_4_vs_4_2_lrg,
         nullInterval = null_interval
 )[1],4)
 
 ```
-
-### Near PA: C vs IC
-
-```{r learning-rate-bf-analysis-near-schema-c-vs-schema-ic}
-
-data_for_bf_near_schema_6_0_vs_ic_lr <- data_summary %>%
-        filter(hidden_pa_img_type == 'near') %>%
-        droplevels() %>%
-        
-        pivot_wider(id_cols = c(ptp,
-                                counterbalancing,
-                                hidden_pa_img_type),
-                    names_from = condition,
-                    values_from = learning_rate_two_param_no_outlier) %>% 
-        mutate(schema_6_0_minus_schema_ic = schema_6_0 - schema_ic) %>% 
-        select(schema_6_0_minus_schema_ic) %>% .[[1]]
-
-
-null_interval <- c(0,Inf)
-
-bf_near_schema_6_0_vs_ic_lr <- reportBF(ttestBF(
-        data_for_bf_near_schema_6_0_vs_ic_lr,
-        nullInterval = null_interval
-)[1],4)
-
-```
-
 
 # Learning curve plots
 
