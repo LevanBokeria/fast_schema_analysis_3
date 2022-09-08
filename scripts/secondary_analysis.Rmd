@@ -421,9 +421,10 @@ data_summary %>%
 
 ```{r learning-rate-bayes-analysis-schema-c-far-vs-near}
 
-data_for_bf_schema_c_far_vs_near_lr <- data_summary %>%
-        filter(hidden_pa_img_type != 'all_pa') %>%
-        filter(condition == 'schema_c') %>%
+data_for_bf_schema_6_0_far_vs_near_lr <- data_summary %>%
+        filter(hidden_pa_img_type != 'all_pa',
+               hidden_pa_img_type != 'near_far_combined') %>%
+        filter(condition == 'schema_6_0') %>%
         droplevels() %>%
         
         pivot_wider(id_cols = c(ptp,
@@ -431,12 +432,12 @@ data_for_bf_schema_c_far_vs_near_lr <- data_summary %>%
                                 condition),
                     names_from = hidden_pa_img_type,
                     values_from = learning_rate_two_param_no_outlier) %>% 
-        mutate(far_minus_near = far - near) %>%
+        mutate(far_minus_near = far - near) %>% View()
         select(far_minus_near) %>% .[[1]]
 
-data_for_bf_schema_c_far_vs_near_lrg <- data_summary %>%
+data_for_bf_schema_6_0_far_vs_near_lrg <- data_summary %>%
         filter(hidden_pa_img_type != 'all_pa') %>%
-        filter(condition == 'schema_c') %>%
+        filter(condition == 'schema_6_0') %>%
         droplevels() %>%
         
         pivot_wider(id_cols = c(ptp,
@@ -450,13 +451,13 @@ data_for_bf_schema_c_far_vs_near_lrg <- data_summary %>%
 
 null_interval <- c(-Inf,0)
 
-bf_schema_c_far_vs_near_learning_rate <- reportBF(ttestBF(
-        data_for_bf_schema_c_far_vs_near_lr,
+bf_schema_6_0_far_vs_near_learning_rate <- reportBF(ttestBF(
+        data_for_bf_schema_6_0_far_vs_near_lr,
         nullInterval = null_interval
 )[1],4)
 
-bf_schema_c_far_vs_near_learning_rate_g <- reportBF(ttestBF(
-        data_for_bf_schema_c_far_vs_near_lrg,
+bf_schema_6_0_far_vs_near_learning_rate_g <- reportBF(ttestBF(
+        data_for_bf_schema_6_0_far_vs_near_lrg,
         nullInterval = null_interval
 )[1],4)
 
@@ -475,8 +476,8 @@ data_for_bf_near_l_vs_c_lr <- data_summary %>%
                                 hidden_pa_img_type),
                     names_from = condition,
                     values_from = learning_rate_two_param_no_outlier) %>% 
-        mutate(schema_l_minus_schema_c = schema_l - schema_c) %>% 
-        select(schema_l_minus_schema_c) %>% .[[1]]
+        mutate(schema_l_minus_schema_6_0 = schema_l - schema_6_0) %>% 
+        select(schema_l_minus_schema_6_0) %>% .[[1]]
 
 
 null_interval <- c(-Inf,0)
@@ -495,8 +496,8 @@ data_for_bf_near_l_vs_c_lr_g <- data_summary %>%
                                 hidden_pa_img_type),
                     names_from = condition,
                     values_from = learning_rate_two_param_no_outlier_G) %>% 
-        mutate(schema_l_minus_schema_c = schema_l - schema_c) %>% 
-        select(schema_l_minus_schema_c) %>% .[[1]]
+        mutate(schema_l_minus_schema_6_0 = schema_l - schema_6_0) %>% 
+        select(schema_l_minus_schema_6_0) %>% .[[1]]
 
 bf_near_l_vs_c_lrg <- reportBF(ttestBF(
         data_for_bf_near_l_vs_c_lr_g,
@@ -509,7 +510,7 @@ bf_near_l_vs_c_lrg <- reportBF(ttestBF(
 
 ```{r learning-rate-bf-analysis-near-schema-c-vs-schema-ic}
 
-data_for_bf_near_schema_c_vs_ic_lr <- data_summary %>%
+data_for_bf_near_schema_6_0_vs_ic_lr <- data_summary %>%
         filter(hidden_pa_img_type == 'near') %>%
         droplevels() %>%
         
@@ -518,14 +519,14 @@ data_for_bf_near_schema_c_vs_ic_lr <- data_summary %>%
                                 hidden_pa_img_type),
                     names_from = condition,
                     values_from = learning_rate_two_param_no_outlier) %>% 
-        mutate(schema_c_minus_schema_ic = schema_c - schema_ic) %>% 
-        select(schema_c_minus_schema_ic) %>% .[[1]]
+        mutate(schema_6_0_minus_schema_ic = schema_6_0 - schema_ic) %>% 
+        select(schema_6_0_minus_schema_ic) %>% .[[1]]
 
 
 null_interval <- c(0,Inf)
 
-bf_near_schema_c_vs_ic_lr <- reportBF(ttestBF(
-        data_for_bf_near_schema_c_vs_ic_lr,
+bf_near_schema_6_0_vs_ic_lr <- reportBF(ttestBF(
+        data_for_bf_near_schema_6_0_vs_ic_lr,
         nullInterval = null_interval
 )[1],4)
 
