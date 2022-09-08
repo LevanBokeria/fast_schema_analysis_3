@@ -192,14 +192,14 @@ data_summary %>%
         stat_summary(fun=mean,
                      color='red',
                      size=1) +
-        ggtitle('Block 2, schema-l vs schema-c') +
+        ggtitle('Block 2, schema-2-2 vs schema-4-2') +
         geom_hline(yintercept = 0, linetype = 'dashed') +
         ylab('Schema-L minus Schema-C') +
         xlab('')
 
 ```
 
-```{r schema-l-vs-schema-c-LOG, fig.width=3, fig.height=4}
+```{r schema-2-2-vs-schema-4-2-LOG, fig.width=3, fig.height=4}
 
 data_summary %>%
         filter(hidden_pa_img_type == 'near_far_combined') %>%
@@ -224,7 +224,7 @@ data_summary %>%
         stat_summary(fun=mean,
                      color='red',
                      size=1) +
-        ggtitle('Block 2, schema-l vs schema-c LOG') +
+        ggtitle('Block 2, schema-2-2 vs schema-4-2 LOG') +
         geom_hline(yintercept = 0, linetype = 'dashed') +
         ylab('Schema-L minus Schema-C LOG') +
         xlab('')

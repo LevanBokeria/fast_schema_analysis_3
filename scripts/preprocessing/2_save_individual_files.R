@@ -24,7 +24,7 @@ prol_to_rand <- read_csv(paste0('../../../',
 incoming_files <- list.files(paste0('./data/incoming_data/',file_location,'/'))
 
 # Alternatively, specify the file name
-incoming_files <- c('jatos_results_3.txt')
+incoming_files <- c('jatos_results_6.txt')
 
 prol_ids <- c()
 
@@ -46,6 +46,39 @@ for (iFile in incoming_files){
                 json_decoded <- fromJSON(json_content)
                 
                 print(json_decoded$prolific_ID)  
+                
+                # If its 62cc3a6cddb99927e3c62fb9, manually add the debriefing component
+                # For some reason, this did not get saved in the studySessionData.outputData
+                if (json_decoded$prolific_ID == '62cc3a6cddb99927e3c62fb9'){
+                        
+                        # Find the debriefing component
+                        start_loc_deb <- str_locate_all(my_data, 'debriefing_start_---')[[1]]
+                        end_loc_deb   <- str_locate_all(my_data, '---_debriefing_end]')[[1]]
+                        
+                        json_content_deb <- substr(my_data,start_loc_deb[iPtp,2]+1,end_loc_deb[iPtp,1]-1)
+                        
+                        json_decoded_deb <- fromJSON(json_content_deb)
+                        
+                        json_decoded_deb <- json_decoded_deb[1,]
+                        
+                        json_decoded_deb <- json_decoded_deb %>%
+                                select(response)
+                        
+                        json_decoded_deb <- do.call(data.frame,json_decoded_deb)
+                        
+                        json_decoded_deb <- json_decoded_deb %>%
+                                rename(Q0 = response.Q0,
+                                       Q1 = response.Q1,
+                                       Q2 = response.Q2,
+                                       Q3 = response.Q3,
+                                       Q4 = response.Q4,
+                                       Q5 = response.Q5,
+                                       Q6 = response.Q6,
+                                       Q7 = response.Q7)
+                        
+                        # Now, add this to the output
+                        json_decoded$outputData$debriefing$response <- json_decoded_deb
+                }
                 
                 # Find the rand_id of this person
                 iRand_id <- prol_to_rand$rand_id[prol_to_rand$prol_id == json_decoded$prolific_ID]

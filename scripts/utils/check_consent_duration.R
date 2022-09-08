@@ -1,9 +1,5 @@
 # Description ############################
 
-# This script will load the group data file downloaded from JATOS, find the 
-# 'data submission' modules for each participant, and save those as separate
-# RData files. Prolific IDs are substituted with sub_00* strings.
-
 # Global setup ###########################
 
 rm(list=ls())
@@ -18,7 +14,7 @@ file_location <- 'jatos_gui_downloads'
 # Get the file mapping prolific IDs with randID
 prol_to_rand <- read_csv(paste0('../../../',
                                 Sys.getenv("USERNAME"),
-                                '/ownCloud/Cambridge/PhD/projects/fast_schema_mapping/prolific_metadata/prol_id_to_rand_id.csv'))
+                                '/ownCloud/Cambridge/PhD/projects/fast_schema_mapping_decoupling_distraction/prolific_metadata/prol_id_to_rand_id.csv'))
 
 # Get a list of all files in the folder
 incoming_files <- list.files(paste0('./data/incoming_data/',file_location,'/'))
@@ -39,7 +35,7 @@ for (iFile in incoming_files){
         pid_start_loc <- str_locate_all(my_data, 'data_submission_start---')[[1]]
         pid_end_loc   <- str_locate_all(my_data, '---data_submission_end]')[[1]]        
         
-        for (iPtp in seq(nrow(start_loc))){
+        for (iPtp in seq(nrow(pid_start_loc))){
                 
                 json_content <- substr(my_data,start_loc[iPtp,2]+1,end_loc[iPtp,1]-1)
                 
