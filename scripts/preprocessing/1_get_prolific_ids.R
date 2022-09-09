@@ -22,7 +22,7 @@ source('./scripts/utils/load_all_libraries.R')
 # Get a list of all files in the folder
 incoming_files <- list.files('./data/incoming_data/jatos_gui_downloads/')
 
-incoming_files <- c('jatos_results_8.txt')
+incoming_files <- c('jatos_results_10.txt')
 
 prol_ids <- c()
 
@@ -65,8 +65,55 @@ for (iFile in incoming_files){
 
 }
 
-# Now here, save these as CSV
-write_csv(as.data.frame(prol_ids),
+# Automatically append to the prol id file and generate sub IDs
+
+prol_id_file <- import(paste0('../../../',
+                              Sys.getenv("USERNAME"),
+                              '/ownCloud/Cambridge/PhD/projects/fast_schema_mapping_decoupling_distraction/prolific_metadata/prol_id_to_rand_id.csv'))
+
+# Check they don't share IDS first
+if (any(prol_id_file$prol_id %in% prol_ids)){
+        
+        stop('IDs already assigned')
+}
+
+# Whats the last sub ID?
+last_sub_id <- prol_id_file$rand_id[nrow(prol_id_file)]
+
+last_sub_id_num <- parse_number(last_sub_id)
+
+prol_ids <- as.data.frame(prol_ids) %>%
+        rename(prol_id = prol_ids) %>%
+        mutate(experiment = 1,
+               rand_id = NA)
+
+# Now, add sub ids
+for (iRow in seq(nrow(prol_ids))){
+        
+        if (last_sub_id_num < 10){
+                
+                iID <- paste0('sub_00',last_sub_id_num+iRow)
+                
+        } else if (last_sub_id_num < 100){
+                
+                iID <- paste0('sub_0',last_sub_id_num+iRow)
+                
+        } else {
+                
+                iID <- paste0('sub_',last_sub_id_num+iRow)
+                
+        }
+        
+        prol_ids$rand_id[iRow] <- iID
+        
+        
+}
+
+
+prol_id_file <- rbind(prol_id_file,prol_ids)
+
+# Now, save this as a csv file
+write_csv(prol_id_file,
           paste0('../../../',
                  Sys.getenv("USERNAME"),
-                 '/ownCloud/Cambridge/PhD/projects/fast_schema_mapping_decoupling_distraction/prolific_metadata/incoming_prol_ids.csv'))
+                 '/ownCloud/Cambridge/PhD/projects/fast_schema_mapping_decoupling_distraction/prolific_metadata/prol_id_to_rand_id.csv'))

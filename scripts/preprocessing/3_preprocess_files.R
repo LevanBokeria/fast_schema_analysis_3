@@ -10,6 +10,9 @@ rm(list=ls())
 
 source('./scripts/utils/load_all_libraries.R')
 
+# Avoid the message by summarise
+options(dplyr.summarise.inform = FALSE)
+
 saveDataCSV <- T
 
 # Start reading the files ##################
