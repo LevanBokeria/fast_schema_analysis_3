@@ -1057,3 +1057,147 @@ sub_100,schema_4_2,67317.89999997616,"Cupcake, escalator, sink, bed, basketball,
 sub_100,schema_4_4,49763.39999997616,"bathtub, flip flop, door handle, ace of spades, wing mirror, curtain, chair, salt shaker","school bus, map, tv, donut, tap, no parking sign"
 sub_100,schema_6_0,53510,"sink, cucumber, bench, traffic light, guiness, tomatoes","cow, drumkit, light, rocking chair, american football, ceiling fan"
 sub_100,schema_2_2,41681.59999996424,"present, pumpkin, kiwi, phone","squirrel, wheel, cloud, bee, staircase, jeans"
+sub_101,schema_2_2,55012,"Cupcake, Electric Stairs, Turntable, Bed","Table, Onion, Wheel, Library, Pumpkin, Sign"
+sub_101,schema_4_2,43180,"Bathtub, Flipflop, Handle, Card, Mirror, Drape","Bus, Map, TV, Donut, Pipe, Sign"
+sub_101,schema_4_4,47045,"Sink, Cucumber, Picnic table, Trafic light, Beer, Tomatoes ATM, Christmas tree","Cow, Drums, Bulb, Chair, Football, Fan"
+sub_101,schema_6_0,33489,"Gift, Pumpkin, Kiwi, Telephone, Rose, Shovel","Squirrel, Wheel, Cloud, Bee, Stairs, Trousers"
+sub_102,schema_6_0,60781,"CUPCAKE, STAIRS,RECORD PLAYER, BED, BASKETBALL AND PLUG","TABLE, ONION, STEERING WHEEL. BOOKSHELF. PUMPKIN AND NO SMOKING"
+sub_102,schema_2_2,28450.800000000047,"BATH, FLIPFLOP. DOOR HANDLE, CARD","BUS, MAP. TV, DONUT, TAP, SIGN"
+sub_102,schema_4_2,37584.200000000186,"SINK, CUCUMBER, TABLET, TRAFFIC LIGHTS, CUP, TOMATOES","COW, DRUMS, LIGHTBULB, CHAIR, BALL, FAN"
+sub_102,schema_4_4,40967.299999999814,"PRESENT, PUMPKIN, KIWI, PHONE, ROSE, SPADE, CRISP, CUP","SQUIRRELL, WHEEL, CLOUD, BEE, STAIRS, JEANS"
+sub_103,schema_4_2,76783.59999999963,"Cupcake, escalator, record player, bed, basketball, light switch","table, red onion, steering wheel, bookcase, pumpkin, no smoking sign"
+sub_103,schema_4_4,58915.800000000745,"bath, flip flop, door handle, playing card, wing mirror, curtain, chair, salt","bus, map, tv, doughnut, taps, no parking sign"
+sub_103,schema_6_0,50448.699999999255,"sink, cucumner, bench, traffic lights, pint beer, tomatoes","cow, drums, light, chair, rugby ball, ceiling fan"
+sub_103,schema_2_2,35870.79999999888,"present, pumpkin, kiwi, telephone box","squirrel, bike wheel, cloud, bee, stairs, jeans"
+sub_104,schema_6_0,60534,"Cupcake, escalator, briefcase, bed, basketball, plug"," table, onion, steering wheel, shelves, pumpkin, sign"
+sub_104,schema_2_2,29739,"Bath, flip, flop, door handle, card","Bus, map, TV, donut, tap, sign"
+sub_104,schema_4_2,51735,"Sink, cucumber, bench, lights, glass, tomatoes","cow, drums, bulb, chair, ball, fan"
+sub_104,schema_4_4,55936,"present, pumpkin, kiwi, phone, rose, spade, chip, mug","Squirel, tire, cloud, wasp, stairs, jeans"
+sub_105,schema_2_2,49969.699999999255,"Cupcake
+Escalator
+Drinking Fountain
+Bed","Table
+Onion
+Steering Wheel
+Shelves
+Pumpkin
+No Smoking Sign"
+sub_105,schema_4_2,146502.5,"Bath
+Sandal
+Door Handle
+Card
+Car mirror
+Curtains","Bus
+Map
+TV
+Donut
+Tap
+No Parking "
+sub_105,schema_4_4,51958.099999997765,"Sink
+Cucumber
+Table
+Traffic Lights
+Guinness
+Fruit
+ATM
+Xmas Tree","Cow
+Drum Kit
+Light Bulb
+Chair
+American Football
+Fan"
+sub_105,schema_6_0,62270.800000000745,"Presents
+Pumpkin
+Kiwi
+Payphone
+Flower
+Shovel","Squirrel
+Bike Wheel
+Cloud
+Bee
+Stairs
+Jeans"
+sub_106,schema_6_0,64745.70000000298,"cake, escalator, sink, bed, basketball, plug","table, onion, steering wheel, bookcase, pumpkin, no smoking sign"
+sub_106,schema_2_2,45389.29999999702,"bath, flip flop, handle, playing card","bus, map, tv, doughnut, tap, no parking sign"
+sub_106,schema_4_2,63619.09999999404,"sink, cucumber, bench, traffic light, beer, tomatoes","cow, drum, bulb, chair, ball, fan"
+sub_106,schema_4_4,46579.40000000596,"present, pumpkin, kiwi, pump, rose, spade, crisps, mug","squirrel, wheel, cloud, wasp, stairs, jeans"
+sub_107,schema_2_2,76141.89999997616,"Cupcake, escalator, water fountain, bed, ","table, onion, steering wheel, shelves, pumpkin, no smoking sign"
+sub_107,schema_4_2,69976,"bath, sandal, door handle, card, mirror, curtain","school bus, world map, tv, doughnut, tap, sign"
+sub_107,schema_4_4,66019.10000002384,"sink, cucumber, picnic table, stop lights, coca-cola, tomatoes, ATM, christmas tree","cow, drums, light, rocking chair, football, ceiling fan"
+sub_107,schema_6_0,43554.40000009537,"Present, pumpkin, kiwi, phone, rose, shovel","squirrel, wheel, cloud, bee , stairs, jeans"
+sub_108,schema_2_2,33212.59999999963,Cupcake escalator drinking fountain bed,Table onion steering wheel bookshelf pumpkin no smoking sign
+sub_108,schema_4_2,25856.60000000149,Bath flip-flop door handle ace wing mirror curtain,School bus map TV doughnut sink no parking sign
+sub_108,schema_4_4,79115.60000000149,Sync cucumber bench traffic lights pint tomatoes ATM Christmas tree,Cow drum set bulb chair ball ceiling fan
+sub_108,schema_6_0,36110.09999999963,gift pumpkin kiwi phone rose hoe,squirrel wheel cloud wasp stairs jeans
+sub_109,schema_4_2,70859,"cupcake, escalator, drawer, bed, basketball, socket","table, onion, steering wheel, shelfs, pumpkin, no smoking"
+sub_109,schema_4_4,50998.800000190735,"Bathtub, slipper, door handle, card, wing mirror, curtain, chair, salt","school bus, map, tv, donut, tap, no parking"
+sub_109,schema_6_0,65604.20000004768,"sink, cucumber, bench, traffic light, beer, fruit","cow, drum kit, light bulb, chair, rugby ball, fan"
+sub_109,schema_2_2,61592.59999990463,"present, pumpkin, kiwi, telephone","squirrel, wheel, cloud, bee, stairs, jeans"
+sub_110,schema_6_0,70456.80000000075,"cake, escalator, fountain, bed, ball, socket, ","table, onion, wheel, shelf, pumpkin, sign"
+sub_110,schema_2_2,37985.5,"bath, slipper, handle, card","bus, map, TV, doughnut, tap, sign"
+sub_110,schema_4_2,39842.09999999963,"sink, cucumber, bench, light, beer, tomato","cow, drums, bulb, chair, rugby ball, fan"
+sub_110,schema_4_4,34717.10000000149,"present, pumpkin, kiwi, phone, rose, spade, crisp, flask","squirrel, wheel, cloud, bee, stairs, jeans"
+sub_111,schema_4_2,73347,"Cupcake, escalator, gold box, bed, basketball, plug socket","Table, onion slice, wheel, shelves, small pumpkin, no smoking sign"
+sub_111,schema_4_4,81573.69999980927,"Bath, flip flops, door handle, ace of spades, car window, curtains, chair, salt","American school bus, map, computer monitor, donut, taps, P no go sign"
+sub_111,schema_6_0,50269.799999952316,"Sink, cucumber, bench, traffic lights, guiness, tomatoes","cow, drums, lightbulb, chair, rugby ball, ceiling fan"
+sub_111,schema_2_2,38949.10000014305,"Present, pumpkin, kiwi, petrol tank","Squirrel, wheel, cloud, bee, stairs, jeans"
+sub_112,schema_4_4,91166.7000002861,"cupcake, escalator, sink, bed, basketball, plug socket, pasta, shower head","table, onion, steering wheel, shelves, pumpkin, no smoking sign"
+sub_112,schema_6_0,73278.39999961853,"bath, flipflop, door handle, ace of diamonds, wing mirror, curtain","school bus, world map, monitor, donut, tap, no parking sign"
+sub_112,schema_2_2,43973.800000190735,"sink, cucumber, bench, traffic lights","cow, drunk kit, light bulb, rocking chair, american football, ceiling fan"
+sub_112,schema_4_2,48037.5,"present, pumpkin, kiwi, phone, rose, spade","squirrel, wheel, cloud, bee, stairs, jeans"
+sub_113,schema_4_4,66142,"Cake, escalator, sink, bed, ball, socket, pasta, shower head","table, onion, wheel, bookcase, pumpkin, no smoking sign"
+sub_113,schema_6_0,71080,"bath, flip flop, handle, card, car mirror, curtain","bus, map, tv, doughnut, taps, no parking sign"
+sub_113,schema_2_2,76322.80000000005,"sink, cucumber, table, lights","cow, drums, bulb, rocking chair, rugby ball, ceiling light"
+sub_113,schema_4_2,51973.10000000009,"present, pumpkin, kiwi, phone, rose, spade","squirrel, wheel, cloud, wasp, stairs, jeans"
+sub_114,schema_4_4,141775.2999997139,"cupcake, escalator, sink thing, bed, basketball, plug socket, pasta, shower head","table, onion slice, steering wheel, bookcase, pumpkin, no smoking sign"
+sub_114,schema_6_0,115471.89999961853,"bath, sandal, door handle, ace card, wing mirror, curtain","bus, map of world, tv, doughnut, taps, no parking sign"
+sub_114,schema_2_2,89876.19999980927,"sink, cucumber, picnic table, traffic lights","cow, drums, bulb, chair, American football, fan"
+sub_114,schema_4_2,97213,"present, pumpkin, kiwi?, public payphone, flower, shovel","squirrel, bicycle hweel, cloud, bee, staircase, jeans"
+sub_115,schema_4_4,95578.59999990463,"cupcake, escalators, music box, bed, basket ball, plug, pasta, shower","table, onion, wheel, bookshelf, pumpkin, sign"
+sub_115,schema_6_0,89352,"bathtub, flip flop, door handle, card, mirror, curtain","bus, map, tv, doughnut, faucet, sign"
+sub_115,schema_2_2,37923.7999997139,"sink, cucumber, bench, traffic lights","cow, drums, bulb, chair, rugby ball, fan"
+sub_115,schema_4_2,52699.89999961853,"present, pumpkin, kiwi, telephone, flower, shovel","squirrel, wheel, cloud, wasp, stairs, trousers"
+sub_116,schema_4_4,65496.29999999888,"cupcake
+escalator
+drinking fountain
+bed
+basketball
+socket
+pasta
+showerhead","table 
+onion
+steering wheel
+book case
+pumpkin
+no smoking sign"
+sub_116,schema_6_0,99495.70000000112,"bathtub
+flipflop
+handle
+ace
+wingmirror
+curtain","bus
+map
+monitor
+donut
+tap
+no parking sign"
+sub_116,schema_2_2,121055.5,"sink
+cucumber
+picnic bench
+traffic lights","cow
+drum kit
+bulb
+chair
+football
+fan"
+sub_116,schema_4_2,63025.20000000112,"present
+carved pumpkin
+kiwi
+telephone
+rose
+shovel","squirrel
+wheel
+cloud
+bee
+stairs
+jeans"

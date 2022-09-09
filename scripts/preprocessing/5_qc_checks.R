@@ -103,6 +103,10 @@ qc_table <- merge(qc_check_debrief_and_errors,
                   all.y = T,
                   by = 'ptp')
 
+# Turn NAs into False for the manual check
+qc_table$qc_fail_manual[is.na(qc_table$qc_fail_manual)] <- FALSE
+
+
 qc_table <- merge(qc_table,
                   qc_check_missing_or_fast,
                   by = 'ptp')
