@@ -22,7 +22,7 @@ source('./scripts/utils/load_all_libraries.R')
 # Get a list of all files in the folder
 incoming_files <- list.files('./data/incoming_data/jatos_gui_downloads/')
 
-incoming_files <- c('jatos_results_12.txt')
+incoming_files <- c('jatos_results_13.txt')
 
 prol_ids <- c()
 

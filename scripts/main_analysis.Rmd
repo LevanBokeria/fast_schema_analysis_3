@@ -133,7 +133,8 @@ data_summary %>%
         ggtitle('Block 2, comparing conditions') +
         ylab('Block 2 error') + 
         xlab('') +
-        theme(legend.position = '')
+        theme(legend.position = '') +
+        facet_wrap(~counterbalancing)
 
 ```
 
