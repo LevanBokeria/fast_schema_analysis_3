@@ -410,6 +410,129 @@ bf_4_4_vs_4_2_LOG <- reportBF(ttestBF(
 
 ```
 
+## 4_2 vs 6_0
+
+### Plot:
+
+```{r 4_2-vs-6_0, fig.width=3, fig.height=4}
+
+data_summary %>%
+        filter(hidden_pa_img_type == 'near_far_combined') %>%
+        droplevels() %>%
+        
+        pivot_wider(id_cols = c(ptp,
+                                counterbalancing,
+                                hidden_pa_img_type),
+                    names_from = condition,
+                    values_from = block_2_mouse_error_mean) %>% 
+        mutate(schema_4_2_minus_6_0 = schema_4_2 - schema_6_0) %>% 
+        
+        ggplot(aes(x='difference',
+                   y=schema_4_2_minus_6_0)) +
+        geom_violin() +
+        geom_boxplot(width=0.1,
+                     fatten=4,
+                     outlier.shape = '') +
+        geom_jitter(height = 0,
+                    width = 0.06,
+                    alpha = 0.3) +
+        stat_summary(fun=mean,
+                     color='red',
+                     size=1) +
+        ggtitle('Block 2, schema-4_2 vs schema-6_0') +
+        geom_hline(yintercept = 0, linetype = 'dashed') +
+        ylab('Schema-L minus Schema-C') +
+        xlab('')
+
+```
+
+```{r schema-4_2-vs-schema-6_0-LOG, fig.width=3, fig.height=4}
+
+data_summary %>%
+        filter(hidden_pa_img_type == 'near_far_combined') %>%
+        droplevels() %>%
+        
+        pivot_wider(id_cols = c(ptp,
+                                counterbalancing,
+                                hidden_pa_img_type),
+                    names_from = condition,
+                    values_from = block_2_mouse_error_mean_LOG) %>% 
+        mutate(schema_4_2_minus_6_0 = schema_4_2 - schema_6_0) %>% 
+        
+        ggplot(aes(x='difference',
+                   y=schema_4_2_minus_6_0)) +
+        geom_violin() +
+        geom_boxplot(width=0.1,
+                     fatten=4,
+                     outlier.shape = '') +
+        geom_jitter(height = 0,
+                    width = 0.06,
+                    alpha = 0.3) +
+        stat_summary(fun=mean,
+                     color='red',
+                     size=1) +
+        ggtitle('Block 2, schema-4-2 vs schema-6-0 LOG') +
+        geom_hline(yintercept = 0, linetype = 'dashed') +
+        ylab('Diff score LOG') +
+        xlab('')
+
+```
+
+
+### Bayes Factor
+
+```{r bf-analysis-schema-4-2-vs-schema-6-0}
+
+data_for_bf_4_2_vs_6_0 <- data_summary %>%
+        filter(hidden_pa_img_type == 'near_far_combined') %>%
+        droplevels() %>%
+        
+        pivot_wider(id_cols = c(ptp,
+                                counterbalancing,
+                                hidden_pa_img_type),
+                    names_from = condition,
+                    values_from = block_2_mouse_error_mean) %>% 
+        mutate(schema_4_2_minus_6_0 = schema_4_2 - schema_6_0) %>% 
+        select(schema_4_2_minus_6_0) %>% .[[1]]
+
+
+null_interval <- c(-Inf,Inf)
+
+bf_4_2_vs_6_0 <- reportBF(ttestBF(
+        data_for_bf_4_2_vs_6_0,
+        nullInterval = null_interval
+)[1],4)
+
+# Just get the effect size:
+es_4_2_vs_6_0 <- mean(data_for_bf_4_2_vs_6_0) / sd(data_for_bf_4_2_vs_6_0)
+
+```
+
+
+```{r bf-analysis-schema-4-2-vs-schema-6-0-LOG}
+
+data_for_bf_4_2_vs_6_0_LOG <- data_summary %>%
+        filter(hidden_pa_img_type == 'near_far_combined') %>%
+        droplevels() %>%
+        
+        pivot_wider(id_cols = c(ptp,
+                                counterbalancing,
+                                hidden_pa_img_type),
+                    names_from = condition,
+                    values_from = block_2_mouse_error_mean_LOG) %>% 
+        mutate(schema_4_2_vs_6_0 = schema_4_2 - schema_6_0) %>% 
+        select(schema_4_2_vs_6_0) %>% .[[1]]
+
+
+null_interval <- c(-Inf,Inf)
+
+bf_4_2_vs_6_0_LOG <- reportBF(ttestBF(
+        data_for_bf_4_2_vs_6_0_LOG,
+        nullInterval = null_interval
+)[1],4)
+
+```
+
 ## Near vs Far within each condition:
 
 ```{r block-2-conditions-near-far, fig.width=7}
@@ -485,14 +608,16 @@ data_summary %>%
 
 ```
 
-### Bayes Factor
+### Bayes Factors
 
-```{r bayes-analysis-schema-c-far-vs-near}
+```{r bf-far-near-all-conditions}
 
-data_for_bf_schema_6_0_far_vs_near <- data_summary %>%
+null_interval <- c(0,Inf)
+
+
+bf_far_vs_near <- data_summary %>%
         filter(!hidden_pa_img_type %in% c('all_pa',
                                           'near_far_combined')) %>%
-        filter(condition == 'schema_6_0') %>%
         droplevels() %>%
         
         pivot_wider(id_cols = c(ptp,
@@ -501,24 +626,16 @@ data_for_bf_schema_6_0_far_vs_near <- data_summary %>%
                     names_from = hidden_pa_img_type,
                     values_from = block_2_mouse_error_mean) %>% 
         mutate(far_minus_near = far - near) %>%
-        select(far_minus_near) %>% .[[1]]
+        group_by(condition) %>%
+        
+        summarise(bf = reportBF(ttestBF(cur_data()$far_minus_near,
+                               nullInterval = null_interval)[1],4)
+        ) %>%
+        ungroup()
 
-
-null_interval <- c(0,Inf)
-
-bf_schema_6_0_far_vs_near <- reportBF(ttestBF(
-        data_for_bf_schema_6_0_far_vs_near,
-        nullInterval = null_interval
-)[1],4)
-
-```
-
-```{r bayes-analysis-schema-c-far-vs-near-LOG}
-
-data_for_bf_schema_6_0_far_vs_near_LOG <- data_summary %>%
+bf_far_vs_near_LOG <- data_summary %>%
         filter(!hidden_pa_img_type %in% c('all_pa',
                                           'near_far_combined')) %>%
-        filter(condition == 'schema_6_0') %>%
         droplevels() %>%
         
         pivot_wider(id_cols = c(ptp,
@@ -527,18 +644,14 @@ data_for_bf_schema_6_0_far_vs_near_LOG <- data_summary %>%
                     names_from = hidden_pa_img_type,
                     values_from = block_2_mouse_error_mean_LOG) %>% 
         mutate(far_minus_near = far - near) %>%
-        select(far_minus_near) %>% .[[1]]
-
-
-null_interval <- c(0,Inf)
-
-bf_schema_6_0_far_vs_near_LOG <- reportBF(ttestBF(
-        data_for_bf_schema_6_0_far_vs_near_LOG,
-        nullInterval = null_interval
-)[1],4)
+        group_by(condition) %>%
+        
+        summarise(bf = reportBF(ttestBF(cur_data()$far_minus_near,
+                               nullInterval = null_interval)[1],4)
+        ) %>%
+        ungroup()
 
 ```
-
 
 # Reaction times 
 
