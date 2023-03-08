@@ -135,7 +135,7 @@ ggsave(filename = 'learning_rates_all_cond.png', plot = fig_each_ptp, path = './
 ```{r block-2-overall, fig.width=6, fig.height=5}
 
 data_summary %>%
-        filter(hidden_pa_img_type == 'all_pa',
+        filter(hidden_pa_img_type == 'near_far_combined',
                # condition %in% c('schema_c','schema_l')
                ) %>%
         droplevels() %>%
@@ -163,7 +163,7 @@ data_summary %>%
 
 # Barplot
 p <- data_summary %>%
-        filter(hidden_pa_img_type == 'all_pa') %>%
+        filter(hidden_pa_img_type == 'near_far_combined') %>%
         droplevels() %>%
         ggplot(aes(x=condition,
                    y=block_2_mouse_error_mean,
@@ -231,9 +231,99 @@ i_bf_4_2_vs_4_4 <- reportBF(ttestBF(
         nullInterval = null_interval
 )[1],4)
 
+i_bf_2_2_vs_4_2
+i_bf_4_2_vs_4_4
+
 1/i_bf_2_2_vs_4_2
 1/i_bf_4_2_vs_4_4
 ```
+
+# Block 1 and 2 combined
+
+```{r both-block-performance}
+
+# Barplot
+p <- data_summary %>%
+        filter(hidden_pa_img_type == 'near_far_combined') %>%
+        droplevels() %>%
+        # mutate(block_1_2_mouse_error_mean = rowMeans(select(cur_data(),block_1_mouse_error_mean,block_2_mouse_error_mean)),
+        #        block_1_2_mouse_error_mean_LOG = log(block_1_2_mouse_error_mean)) %>%
+        ggplot(aes(x=condition,
+                   y=block_1_2_mouse_error_mean,
+                   fill=condition)) +
+        geom_bar(stat = 'summary', 
+                 fun = 'mean',
+                 width = 0.8) +
+        geom_violin(width = 0.7) +
+        geom_boxplot(width = 0.15,
+                     fatten = 4,
+                     outlier.shape = '') + 
+        geom_jitter(width = 0.05,
+                    height = 0,
+                    alpha = 0.2) +
+        # stat_summary(fun = 'mean',
+        #              size = 2,
+        #              color = 'red') +
+        ylab('Mean Block 1-2 Error') +
+        xlab('') +
+        theme(legend.position = '') + 
+        scale_x_discrete(labels = c('Schema-2-2',
+                                    'Schema-4-2',
+                                    'Schema-4-4',
+                                    'Schema-6-0')) +
+        # coord_cartesian(ylim = c(0,150)) + 
+        ggtitle('Mean Block 1-2 Accuracy') + 
+        theme(plot.title = element_text(hjust = 0.5))
+        
+print(p) 
+
+ggsave(filename = 'block_1_2_barplot.png', plot = p, path = './results/plots/', width = 5, height = 3, device='png', dpi=300)
+
+```
+
+## BF analysis
+
+```{r bf-block-1-2-combined}
+
+
+
+null_interval <- c(-Inf,Inf)
+
+data_summary_wide_condition <- data_summary %>%
+        filter(hidden_pa_img_type == 'near_far_combined') %>%
+        droplevels() %>%
+        
+        pivot_wider(id_cols = c(ptp,
+                                counterbalancing,
+                                hidden_pa_img_type),
+                    names_from = condition,
+                    values_from = block_1_2_mouse_error_mean_LOG)
+
+
+# schema 2_2 vs 4_2
+i_data <- data_summary_wide_condition$schema_2_2 - data_summary_wide_condition$schema_4_2
+
+i_bf_2_2_vs_4_2 <- reportBF(ttestBF(
+        i_data,
+        nullInterval = null_interval
+)[1],4)
+
+# schema 4_2 vs 4_4
+i_data <- data_summary_wide_condition$schema_4_2 - data_summary_wide_condition$schema_4_4
+
+i_bf_4_2_vs_4_4 <- reportBF(ttestBF(
+        i_data,
+        nullInterval = null_interval
+)[1],4)
+
+i_bf_2_2_vs_4_2
+i_bf_4_2_vs_4_4
+
+1/i_bf_2_2_vs_4_2
+1/i_bf_4_2_vs_4_4
+
+```
+
 
 
 # Learning Rates
@@ -290,7 +380,7 @@ p <- data_summary %>%
         #              size = 2,
         #              color = 'red') +
         geom_line(aes(group=ptp),
-                  alpha = 0.2) +
+                  alpha = 0.1) +
         ylab('Learning Rate') +
         xlab('') +
         theme(legend.position = '') + 
@@ -304,7 +394,7 @@ p <- data_summary %>%
         
 print(p) 
 
-# ggsave(filename = 'learning_rates_all_cond.png', plot = p, path = './results/plots/', width = 4, height = 3, device='png', dpi=300)
+ggsave(filename = 'learning_rates_all_cond.png', plot = p, path = './results/plots/', width = 4, height = 3, device='png', dpi=300)
 ```
 
 ## BF analyses
@@ -339,6 +429,9 @@ i_bf_4_2_vs_4_4 <- reportBF(ttestBF(
         i_data,
         nullInterval = null_interval
 )[1],4)
+
+i_bf_2_2_vs_4_2
+i_bf_4_2_vs_4_4
 
 1/i_bf_2_2_vs_4_2
 1/i_bf_4_2_vs_4_4
@@ -418,7 +511,7 @@ p <- data_summary %>%
         
 print(p) 
 
-ggsave(filename = 'near_far_barplot.png', plot = p, path = './results/plots/', width = 6, height = 3, device='png', dpi=300)
+ggsave(filename = 'near_far_barplot.png', plot = p, path = './results/plots/', width = 10, height = 3, device='png', dpi=300)
 
 ```
 

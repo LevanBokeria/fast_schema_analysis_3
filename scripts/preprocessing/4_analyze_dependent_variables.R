@@ -175,7 +175,12 @@ data_summary <- bind_rows(data_summary_all_pas,
 
 ### Log transforms ==========================
 data_summary <- data_summary %>%
-        mutate(block_2_mouse_error_mean_LOG = log(block_2_mouse_error_mean))
+        mutate(block_2_mouse_error_mean_LOG = log(block_2_mouse_error_mean),
+               block_1_mouse_error_mean_LOG = log(block_1_mouse_error_mean),
+               block_1_2_mouse_error_mean = rowMeans(select(data_summary,
+                                                            block_1_mouse_error_mean,
+                                                            block_2_mouse_error_mean)),
+               block_1_2_mouse_error_mean_LOG = log(block_1_2_mouse_error_mean))
 
 # Clean the extra variables
 remove(data_summary_all_pas,
