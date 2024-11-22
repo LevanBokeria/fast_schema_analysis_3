@@ -553,6 +553,17 @@ data_for_bf_schema_4_4_vs_4_2_lrg <- data_summary %>%
         mutate(schema_4_4_vs_4_2 = schema_4_4 - schema_4_2) %>% 
         select(schema_4_4_vs_4_2) %>% .[[1]]
 
+data_for_bf_schema_4_4_vs_4_2_lrg_no_outlier <- data_summary %>%
+        filter(hidden_pa_img_type == 'near_far_combined') %>%
+        droplevels() %>%
+        
+        pivot_wider(id_cols = c(ptp,
+                                counterbalancing),
+                    names_from = condition,
+                    values_from = learning_rate_two_param_no_outlier_G) %>% 
+        mutate(schema_4_4_vs_4_2 = schema_4_4 - schema_4_2) %>% 
+        select(schema_4_4_vs_4_2) %>% .[[1]]
+
 
 null_interval <- c(-Inf,0)
 
@@ -566,7 +577,39 @@ bf_schema_4_4_vs_4_2_learning_rate_g <- reportBF(ttestBF(
         nullInterval = null_interval
 )[1],4)
 
+bf_schema_4_4_vs_4_2_learning_rate_g_no_outlier <- reportBF(ttestBF(
+        data_for_bf_schema_4_4_vs_4_2_lrg_no_outlier,
+        nullInterval = null_interval
+)[1],4)
+
 ```
+
+# Effect size estimates
+
+## 2 parameter model
+
+### Schema 6-0 far vs near
+
+### Schema_2_2 vs 4_2
+
+### Schema 4_4 vs 4_2
+
+```{r effect-size-4-4-vs-4-2}
+
+data_summary %>%
+        filter(hidden_pa_img_type == 'near_far_combined') %>%
+        droplevels() %>%
+        select(ptp,condition,learning_rate_two_param_no_outlier_G)
+
+es_block_2_conditions <- idf %>%
+        cohens_d(block_2_mouse_error_mean_LOG ~ condition, 
+                 paired = TRUE, 
+                 var.equal = FALSE,
+                 # comparisons = list(c("schema_c","schema_ic"),),
+                 hedges.correction = FALSE)
+
+```
+
 
 # Learning curve plots
 
